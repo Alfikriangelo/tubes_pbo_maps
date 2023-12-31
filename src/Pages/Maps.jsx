@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./maps.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { Icon, divIcon, point } from "leaflet";
 import axios from "axios";
@@ -22,6 +22,16 @@ const createClusterCustomIcon = function (cluster) {
 
 const Maps = () => {
   const [data, setData] = useState([]);
+  const purpleOptions = { color: 'purple' }
+  const multiPolygon = [
+    [
+      [-6.955594410086734, 107.63432129269165],
+      [-6.95604058679135, 107.63654424977625],
+      [-6.960455407673797, 107.63564295935879],
+      [-6.959973454096144, 107.6333973753033]
+    ],
+
+  ]
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +45,7 @@ const Maps = () => {
 
     fetchData();
   }, []);
+
 
   return (
     <div className="app-container">
@@ -69,6 +80,7 @@ const Maps = () => {
           ))}
         </MarkerClusterGroup>
 
+        <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
       </MapContainer>
     </div>
   );
