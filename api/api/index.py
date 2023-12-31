@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Konfigurasi untuk file upload
-UPLOAD_FOLDER = r'C:/codingan/coolyeah/biasa/tubes/api/api/uploads'
+UPLOAD_FOLDER = r'C:/codingan/github pribadi/maps/maps/api/api/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
