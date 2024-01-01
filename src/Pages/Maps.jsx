@@ -22,28 +22,34 @@ const createClusterCustomIcon = function (cluster) {
 
 const Maps = () => {
   const [data, setData] = useState([]);
+  const [multiPolygon, setMultiPolygon] = useState([]);
   const purpleOptions = { color: 'purple' }
-  const multiPolygon = [
-    [
-      [-6.955594410086734, 107.63432129269165],
-      [-6.95604058679135, 107.63654424977625],
-      [-6.960455407673797, 107.63564295935879],
-      [-6.959973454096144, 107.6333973753033]
-    ],
 
-  ]
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/get_data");
-        setData(response.data);
+        const responseData = await axios.get("http://127.0.0.1:5000/get_data");
+        setData(responseData.data);
       } catch (error) {
         console.error("Error:", error);
       }
     };
 
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchMultiPolygon = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/get_multipolygon");
+        setMultiPolygon(response.data.multiPolygon);
+      } catch (error) {
+        console.error("Error fetching multiPolygon:", error);
+      }
+    };
+
+    fetchMultiPolygon();
   }, []);
 
 

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 
 from pymongo import MongoClient 
 
@@ -77,7 +77,30 @@ def uploaded_file(filename):
         print("Error sending file:", str(e))
 
         return "Error sending file", 500  # Internal Server Error
+    
+    
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('name')
+    password = data.get('password')
 
+    # Bandingkan data dengan input pengguna
+    if username == 'admin' and password == 'admin':
+        user_data = {'name': 'admin', 'email': 'admin@example.com'}
+        return jsonify(user_data)
+    else:
+        return jsonify({'error': 'Login failed. Check your username and password.'}), 401
+
+@app.route('/get_multipolygon', methods=['GET'])
+def get_multipolygon():
+    multi_polygon = [
+        [-6.955594410086734, 107.63432129269165],
+        [-6.95604058679135, 107.63654424977625],
+        [-6.960455407673797, 107.63564295935879],
+        [-6.959973454096144, 107.6333973753033]
+    ]
+    return jsonify({'multiPolygon': multi_polygon})
 
 if __name__ == '__main__': 
     app.run()

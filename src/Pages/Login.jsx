@@ -16,17 +16,29 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const user = { name: 'admin', password: 'admin' };
-
-    // Bandingkan data dengan input pengguna
-    if (user && user.name === name && user.password === password) {
-      console.log('Login berhasil', user);
-      setError(null);
-      login();
-      navigate('/maps');
-    } else {
-      console.error('Login gagal');
-      setError('Login gagal. Periksa kembali nama pengguna dan kata sandi.');
+    try {
+      const response = await fetch('http://127.0.0.1:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, password }),
+      });
+  
+      if (response.ok) {
+        const userData = await response.json();
+        console.log('Login berhasil', userData);
+        setError(null);
+        login();
+        navigate('/maps');
+      } else {
+        console.error('Login gagal');
+        const errorData = await response.json();
+        setError(errorData.error || 'Login gagal. Periksa kembali nama pengguna dan kata sandi.');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      setError('Something went wrong during login.');
     }
   };
 
