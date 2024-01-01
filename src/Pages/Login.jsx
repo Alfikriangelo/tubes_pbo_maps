@@ -56,9 +56,6 @@ const Login = () => {
           />
         </div>
       </div>
-      <div className='forgot-password'>
-        Lost Password? <span>Click Here!</span>
-      </div>
       <div className='submit-container'>
         <Button
           style={{
