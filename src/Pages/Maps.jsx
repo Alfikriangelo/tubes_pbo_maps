@@ -7,6 +7,7 @@ import { Icon, divIcon, point } from "leaflet";
 import axios from "axios";
 import TombolTambahSurat from '../Components/Surat/TombolTambahSurat';
 import TombolTambahWarga from '../Components/Maps/TombolTambaWarga.jsx';
+import TombolLogout from '../Components/Logout/tombolLogout';
 
 const customIcon = new Icon({
   iconUrl: require("../icons/placeholder.png"),
@@ -56,8 +57,10 @@ const Maps = () => {
 
   return (
     <div className="app-container">
+      <TombolLogout />
       <TombolTambahWarga />
       <TombolTambahSurat />
+
       <MapContainer center={[-6.900466928446799, 107.5969945024512]} zoom={13}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
