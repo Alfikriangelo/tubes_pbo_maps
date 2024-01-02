@@ -5,7 +5,9 @@ import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { Icon, divIcon, point } from "leaflet";
 import axios from "axios";
-import AddMaps from "../Components/addMaps"
+import AddMaps from "../Components/Maps/addMaps"
+import Surat from './Surat';
+import AddSurat from '../Components/Maps/addSurat';
 
 const customIcon = new Icon({
   iconUrl: require("../icons/placeholder.png"),
@@ -55,7 +57,8 @@ const Maps = () => {
 
   return (
     <div className="app-container">
-      <AddMaps />
+      {/* <AddMaps /> */}
+      <AddSurat />
       <MapContainer center={[-6.900466928446799, 107.5969945024512]} zoom={13}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

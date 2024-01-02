@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AuthGuard from './authGuard';
 import Login from './Pages/Login';
 import Maps from './Pages/Maps';
-import { AuthProvider } from './authContext'; // Import AuthProvider dari AuthContext.js
+import { AuthProvider } from './authContext'; 
+import Surat from './Pages/Surat';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/maps" element={<AuthGuard element={<Maps />} />} />
+          <Route path="/surat" element={<AuthGuard element={<Surat />} />}  />
         </Routes>
       </AuthProvider>
     </Router>
