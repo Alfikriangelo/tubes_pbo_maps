@@ -1,11 +1,9 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template
-
 from pymongo import MongoClient 
-
 from flask_cors import CORS
-
 from werkzeug.utils import secure_filename
-
+import os
+import json
 import os
 
 app = Flask(__name__) 
@@ -32,53 +30,88 @@ db = client['mydb']
 
 collection = db['pengguna'] 
 
-@app.route('/add_data', methods=['POST']) 
-def add_data(): 
-    data = request.form
-    file = request.files['file']
+# @app.route('/add_data', methods=['POST']) 
+# def add_data(): 
+#     data = request.form
+#     file = request.files['file']
 
-    if 'nama' not in data or 'lokasi' not in data or 'status' not in data or file is None or not allowed_file(file.filename):
-        return jsonify({'error': 'Semua data (termasuk file) harus diisi dan file harus berupa gambar'}), 400
+#     if 'nama' not in data or 'lokasi' not in data or 'status' not in data or file is None or not allowed_file(file.filename):
+#         return jsonify({'error': 'Semua data (termasuk file) harus diisi dan file harus berupa gambar'}), 400
 
-    # Simpan file di server
-    filename = secure_filename(file.filename)
-    file.save(os.path.abspath(os.path.join(app.config['UPLOAD_FOLDER'], filename)))
+#     # Simpan file di server
+#     filename = secure_filename(file.filename)
+#     file.save(os.path.abspath(os.path.join(app.config['UPLOAD_FOLDER'], filename)))
 
-    # Buat dictionary untuk disimpan ke MongoDB
-    filtered_data = {'nama': data['nama'], 'nik': data['nik'], 'status': data['status'], 'lokasi': data['lokasi'], 'file_path': filename}
+#     # Buat dictionary untuk disimpan ke MongoDB
+#     filtered_data = {'nama': data['nama'], 'nik': data['nik'], 'status': data['status'], 'lokasi': data['lokasi'], 'file_path': filename}
 
-    # Insert data ke MongoDB
-    collection.insert_one(filtered_data) 
+#     # Insert data ke MongoDB
+#     collection.insert_one(filtered_data) 
 
-    return 'Data added to MongoDB'
+#     return 'Data added to MongoDB'
 
-@app.route('/get_data', methods=['GET']) 
-def get_data(): 
-    data = list(collection.find()) 
+# @app.route('/get_data', methods=['GET']) 
+# def get_data(): 
+#     data = list(collection.find()) 
 
-    for entry in data:
-        entry['_id'] = str(entry['_id'])
+#     for entry in data:
+#         entry['_id'] = str(entry['_id'])
 
-    return jsonify(data)
+#     return jsonify(data)
 
 
-@app.route('/uploads/<filename>')
+# @app.route('/uploads/<filename>')
 
-def uploaded_file(filename):
+# def uploaded_file(filename):
 
-    print("Request for file:", filename)
+#     print("Request for file:", filename)
 
+#     try:
+
+#         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+#     except Exception as e:
+
+#         print("Error sending file:", str(e))
+
+#         return "Error sending file", 500  # Internal Server Error
+    
+def ensure_upload_folder():
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
+def save_to_file(data):
+    clean_data = {key: value.replace('\\', '') if isinstance(value, str) else value for key, value in data.items()}
+
+    with open('kamu.txt', 'a') as file:
+        json_data = json.dumps(clean_data, default=str, ensure_ascii=False)
+        file.write(json_data + '\n')
+
+@app.route('/save_data', methods=['POST'])
+def save_data():
     try:
+        data = request.form.to_dict()
 
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+        data['coordinates'] = json.loads(data['coordinates'])
 
+        ensure_upload_folder()
+
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file.filename != '':
+                image_extension = os.path.splitext(image_file.filename)[1]
+                image_filename = f"{data['firstName']}_{data['lastName']}_photo{image_extension}"
+                image_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image_filename))
+                image_file.save(image_path)
+                data['image'] = image_path
+
+        save_to_file(data)
+        return jsonify({"message": "Data saved successfully"})
     except Exception as e:
+        print("Error:", str(e))
+        return jsonify({"error": str(e)}), 500
 
-        print("Error sending file:", str(e))
 
-        return "Error sending file", 500  # Internal Server Error
-    
-    
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()

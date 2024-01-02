@@ -107,17 +107,19 @@ const Surat = () => {
                         <label htmlFor='noRumah' className='mb-2 mt-2'>No Rumah</label>
                         <TextField type='text' name='text' id='noRumah' placeholder='' autoComplete='off' value={noRumah} onChange={(e) => setNoRumah(e.target.value)}/>
 
-                        <div className='mt-2 mb-2'>
+                        
+
+                        <label htmlFor="notes" className='mb-2 mt-2'>Keterangan</label>
+                        <textarea className='mt-2 mb-2' name="keterangan" id="notes" cols="30" rows="10" placeholder='Keterangan Surat' value={keteranganSurat} onChange={(e) => setKeteranganSurat(e.target.value)}></textarea>
+
+                        <div className='mt-5 mb-5'>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DemoContainer components={['DateRangePicker']} >
                                     <DateRangePicker localeText={{ start: 'Dari', end: 'Sampai' }} value={tanggal} onChange={setTanggal}/>
                                 </DemoContainer>
                             </LocalizationProvider>
                         </div>
-
-                        <label htmlFor="notes" className='mb-2 mt-2'>Keterangan</label>
-                        <textarea className='mt-2 mb-2' name="keterangan" id="notes" cols="30" rows="10" placeholder='Keterangan Surat' value={keteranganSurat} onChange={(e) => setKeteranganSurat(e.target.value)}></textarea>
-
+                        
                         <button onClick={() => setShowInvoice(true)} className='mt-2 mb-2 bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300'>Kirim</button>
                     </div>
                 </>
