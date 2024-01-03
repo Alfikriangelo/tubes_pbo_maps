@@ -25,6 +25,8 @@ const createClusterCustomIcon = function (cluster) {
 
 const Maps = () => {
   const [data, setData] = useState([]);
+  const [dataFile, setDataFile] = useState([]);
+  const [surat, setSurat] = useState([])
   const [multiPolygon, setMultiPolygon] = useState([]);
   const purpleOptions = { color: 'purple' }
 
@@ -41,6 +43,17 @@ const Maps = () => {
 
     fetchData();
   }, []);
+
+  const getSavedFileName = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/get_saved_file_name");
+      // Ensure the response structure matches your expectations
+      setSurat(response.dataFile);
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  };
+  
 
   useEffect(() => {
     const fetchMultiPolygon = async () => {
@@ -66,6 +79,19 @@ const Maps = () => {
     }
   };
 
+  useEffect(() => {
+    const getSavedFileName = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/get_saved_file_name");
+        setSurat(response.data);
+      } catch (error) {
+        console.error("Error: ", error);
+      }
+    };
+    getSavedFileName()
+  },[])
+
+
   return (
     <div className="app-container">
       <TombolLogout />
@@ -77,32 +103,37 @@ const Maps = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
-          {data.map((item) => (
-            <Marker
-              key={item._id}
-              position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
-              icon={customIcon}
-            >
-              <Popup>
-                <div>
-                  <p>Nama: {item.name}</p>
-                  <p>NIK: {item.nik}</p>
-                  <p>Alamat: {item.address}</p>
-                  {item.image_url && (
-                    <img
-                      src={item.image_url}
-                      alt={item.name}
-                      style={{ maxWidth: '100%', maxHeight: '150px' }}
-                    />
-                  )}
-                  <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
-                  
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MarkerClusterGroup>
+          <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
+  {data.map((item) => (
+    <Marker
+      key={item._id}
+      position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
+      icon={customIcon}
+    >
+      <Popup>
+        <div>
+          <p>Nama: {item.name}</p>
+          <p>NIK: {item.nik}</p>
+          <p>Alamat: {item.address}</p>
+          
+          {/* Check if surat and surat[item.name] are defined before accessing properties */}
+          <p>Surat : {surat && surat[item.name] ? surat[item.name].fileName : 'Belum ada surat'}</p>
+          {console.log(surat)}
+          {item.image_url && (
+            <img
+              src={item.image_url}
+              alt={item.name}
+              style={{ maxWidth: '100%', maxHeight: '150px' }}
+            />
+          )}
+          <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
+        </div>
+      </Popup>
+    </Marker>
+  ))}
+</MarkerClusterGroup>
+
+  
 
         <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
       </MapContainer>

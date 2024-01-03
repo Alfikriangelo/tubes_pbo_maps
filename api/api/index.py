@@ -8,9 +8,10 @@ import os
 
 app = Flask(__name__) 
 CORS(app)
+saved_file_data = {}
 
 # Konfigurasi untuk file upload
-UPLOAD_FOLDER = r'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/api/api/uploads'
+UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/api/api/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -102,6 +103,7 @@ def save_data():
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
+    
 
 
 @app.route('/get_saved_data', methods=['GET'])
@@ -115,9 +117,14 @@ def get_saved_data():
             if 'image' in data:
                 data['image_url'] = f'http://127.0.0.1:5000/get_photo/{os.path.basename(data["image"])}'
 
+            # Check if the name exists in the saved_file_data dictionary
+            if data['name'] in saved_file_data:
+                data['fileName'] = saved_file_data[data['name']]['fileName']
+
         return jsonify({'savedData': saved_data})
     except Exception as e:
         return handle_error(e)
+
     
 @app.route('/delete_data/<name>', methods=['DELETE'])
 def delete_data(name):
@@ -144,6 +151,30 @@ def get_photo(filename):
     except Exception as e:
         return handle_error(e)
     
+
+@app.route('/save_file_name', methods=['POST'])
+def save_file_name():
+    try:
+        data = request.get_json()
+        nama = data.get('nama')  # Retrieve the "nama" value
+        fileName = data.get('fileName')
+
+        # Save the data in the saved_file_data dictionary
+        saved_file_data[nama] = {'fileName': fileName}
+
+        return jsonify({"message": "File name saved successfully"})
+    except Exception as e:
+        return handle_error(e)
+
+
+@app.route('/get_saved_file_name', methods=['GET'])
+def get_saved_file_name():
+    try:
+        global saved_file_data
+        return jsonify(saved_file_data)
+    except Exception as e:
+        return handle_error(e)
+
 
 
 @app.route('/login', methods=['POST'])

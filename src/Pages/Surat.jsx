@@ -42,15 +42,33 @@ const Surat = () => {
 
     const handleDownload = () => {
         const content = componentRef.current;
-    
         const pdfConfig = {
             margin: 5,
             padding: 10,
-          };
-        
-        const n_file = 'surat_'+nomorSurat+'_'+nama+'.pdf'
-        html2pdf().from(content).set(pdfConfig).save(n_file);
-      };
+        };
+    
+        const fileName = `surat_${nomorSurat}_${nama}.pdf`;
+    
+        // Send the file name and "nama" to the backend
+        fetch('http://127.0.0.1:5000/save_file_name', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nama, fileName }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // After sending the file name and "nama" to the backend, generate and download the PDF
+            html2pdf().from(content).set(pdfConfig).save(fileName);
+        })
+        .catch(error => {
+            console.error('Error sending file name and "nama" to the backend:', error);
+        });
+    };
+    
+    
+    
 
 
   return (
