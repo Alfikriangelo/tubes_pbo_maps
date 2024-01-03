@@ -48,8 +48,8 @@ const Surat = () => {
             padding: 10,
           };
         
-          
-          html2pdf().from(content).set(pdfConfig).save('surat.pdf');
+        const n_file = 'surat_'+nomorSurat+'_'+nama+'.pdf'
+        html2pdf().from(content).set(pdfConfig).save(n_file);
       };
 
 
