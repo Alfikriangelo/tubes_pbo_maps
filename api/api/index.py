@@ -10,7 +10,6 @@ app = Flask(__name__)
 CORS(app)
 saved_file_data = {}
 
-# Konfigurasi untuk file upload
 UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/api/api/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
