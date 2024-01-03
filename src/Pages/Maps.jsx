@@ -98,7 +98,7 @@ const Maps = () => {
       <TombolTambahWarga />
       <TombolTambahSurat />
 
-      <MapContainer center={[-6.957364598435201, 107.63310204139326]} zoom={33}>
+      <MapContainer center={[-6.957364598435201, 107.63310204139326]} zoom={15}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
