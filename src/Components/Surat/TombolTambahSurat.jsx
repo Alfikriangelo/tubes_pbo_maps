@@ -18,12 +18,10 @@ const TombolTambahSurat = () => {
   };
 
   return (
-    <div className="app-container">
-      <div className={"form-container"}>
-        <Button onClick={handleSuratClick}>
-          Surat
-        </Button>
-      </div>
+    <div className='tombol-surat'>
+      <Button variant='contained' onClick={handleSuratClick}>
+        Surat
+      </Button>
     </div>
   );
 }

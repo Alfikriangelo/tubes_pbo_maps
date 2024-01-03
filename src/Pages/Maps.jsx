@@ -6,8 +6,9 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { Icon, divIcon, point } from "leaflet";
 import axios from "axios";
 import TombolTambahSurat from '../Components/Surat/TombolTambahSurat';
-import TombolTambahWarga from '../Components/Maps/TombolTambaWarga.jsx';
+import TombolTambahWarga from '../Components/Maps/TombolTambahWarga.jsx';
 import TombolLogout from '../Components/Logout/tombolLogout';
+import { Button } from '@mui/material';
 
 const customIcon = new Icon({
   iconUrl: require("../icons/placeholder.png"),
@@ -31,8 +32,8 @@ const Maps = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await axios.get("http://127.0.0.1:5000/get_data");
-        setData(responseData.data);
+        const responseData = await axios.get("http://127.0.0.1:5000/get_saved_data");
+        setData(responseData.data.savedData);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -54,6 +55,16 @@ const Maps = () => {
     fetchMultiPolygon();
   }, []);
 
+  const handleDelete = async (name) => {
+    try {
+      await axios.delete(`http://127.0.0.1:5000/delete_data/${name}`);
+      // Refresh data setelah penghapusan
+      const responseData = await axios.get("http://127.0.0.1:5000/get_saved_data");
+      setData(responseData.data.savedData);
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
+  };
 
   return (
     <div className="app-container">
@@ -70,21 +81,23 @@ const Maps = () => {
           {data.map((item) => (
             <Marker
               key={item._id}
-              position={item.lokasi.split(',').map(coord => parseFloat(coord))}
+              position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
               icon={customIcon}
             >
               <Popup>
                 <div>
-                  <p>Nama: {item.nama}</p>
+                  <p>Nama: {item.name}</p>
                   <p>NIK: {item.nik}</p>
-                  <p>Status: {item.status}</p>
-                  {item.file_path && (
+                  <p>Alamat: {item.address}</p>
+                  {item.image_url && (
                     <img
-                      src={`http://127.0.0.1:5000/uploads/${item.file_path}`}
-                      alt={item.nama}
+                      src={item.image_url}
+                      alt={item.name}
                       style={{ maxWidth: '100%', maxHeight: '150px' }}
                     />
                   )}
+                  <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
+                  
                 </div>
               </Popup>
             </Marker>

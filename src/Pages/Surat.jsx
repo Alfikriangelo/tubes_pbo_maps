@@ -4,7 +4,6 @@ import Pembuka from '../Components/Surat/Pembuka'
 import Header from '../Components/Surat/Header'
 import Judul from '../Components/Surat/Judul'
 import Penutup from '../Components/Surat/Penutup'
-import ReactToPrint from 'react-to-print'
 import { TextField } from '@mui/material'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers-pro';
@@ -12,11 +11,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import SignatureCanvas from 'react-signature-canvas';
 import dayjs from 'dayjs'
-
-
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import html2pdf from 'html2pdf.js';
 
 
 const Surat = () => {
+    const navigate = useNavigate();
     const [showInvoice, setShowInvoice] = useState(false)
     const [nomorSurat, setNomorSurat] = useState("")
     const [nama, setNama] = useState("")
@@ -39,14 +40,32 @@ const Surat = () => {
         signatureRef.current.clear();
     };
 
+    const handleDownload = () => {
+        const content = componentRef.current;
+    
+        const pdfConfig = {
+            margin: 5,
+            padding: 10,
+          };
+        
+          
+          html2pdf().from(content).set(pdfConfig).save('surat.pdf');
+      };
+
 
   return (
     <>
-        <main className='m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-2xl xl:max-w-4xl bg-white rounded shadow'>
+        <main className='m-5 p-10 md:max-w-xl md:mx-auto lg:max-w-2xl xl:max-w-4xl bg-white rounded shadow'>
             
             {showInvoice ? (
                 <>  
-                    <ReactToPrint trigger={() => <button className='bg-blue-500 mb-5 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300'>Print / Download</button>} content={() => componentRef.current}/>
+                    <Button
+                        variant='outlined'
+                        onClick={handleDownload}
+                        style={{ textTransform: 'none' }}
+                        >
+                        Download
+                    </Button>
                     <div ref={componentRef} className='p-5'>
                         <Header handlePrint={handlePrint}/>
                     
@@ -120,7 +139,10 @@ const Surat = () => {
                             </LocalizationProvider>
                         </div>
                         
-                        <button onClick={() => setShowInvoice(true)} className='mt-2 mb-2 bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300'>Kirim</button>
+                        <div className="flex" style={{justifyContent: "space-between"}}>
+                            <Button variant='outlined' onClick={() => navigate("/maps")}>Kembali</Button>
+                            <Button variant='contained' onClick={() => setShowInvoice(true)}>Kirim</Button>
+                        </div>
                     </div>
                 </>
             )}

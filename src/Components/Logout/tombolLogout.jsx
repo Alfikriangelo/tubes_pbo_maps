@@ -7,23 +7,21 @@ import Button from '@mui/material/Button';
 const TombolLogout = () => {
   const navigate = useNavigate();
 
-  const handleWargaClick = () => {
+  const handleLogoutClick = () => {
     const isAuthenticated = true; 
 
     if (isAuthenticated) {
       navigate('/');
     } else {
-      navigate('/');
+      navigate('/maps');
     }
   };
 
   return (
-    <div className="app-container">
-      <div className={"form-container"}>
-        <Button onClick={handleWargaClick}>
+      <div className="tombol-logout">
+        <Button variant="contained" color='error' onClick={handleLogoutClick}>
           Logout
-        </Button>
-      </div>
+        </Button> 
     </div>
   );
 }

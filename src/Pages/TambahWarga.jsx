@@ -18,13 +18,13 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import { DivIcon } from "leaflet";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faMapMarker } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
 
 library.add(faMapMarker);
 
 export default function TambahWarga() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     nik: "",
     address: "",
     city: "",
@@ -36,8 +36,8 @@ export default function TambahWarga() {
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
-  const [errorMessages, setErrorMessages] = useState({});
   const initialCoordinatesRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Get user's current location
@@ -144,6 +144,7 @@ export default function TambahWarga() {
                 <Typography variant="h5" textAlign={"center"} sx={{ my: 4 }}>
                   Pendaftaran Anda Berhasil!
                 </Typography>
+                <Button sx={{ mt: 3, mx: "auto", display: "block" }} variant='outlined' onClick={() => navigate("/maps")} style={{ textTransform: 'none' }}>Kembali</Button>
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -155,14 +156,17 @@ export default function TambahWarga() {
                     setIsFormValid={setIsFormValid}
                   />
                 )}
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Button sx={{ mt: 3, ml: 1 }} variant='outlined' onClick={() => navigate("/maps")} style={{ textTransform: 'none' }}>Kembali</Button>
                   <Button
                     type="submit"
                     variant="contained"
                     sx={{ mt: 3, ml: 1 }}
                     disabled={!isFormValid}
+                    style={{ textTransform: 'none' }}
                   >
-                    {activeStep === steps.length - 1 ? "Submit" : "Next"}
+                    {activeStep === steps.length - 1 ? "Kirim" : "Next"}
                   </Button>
                 </Box>
               </React.Fragment>
@@ -177,8 +181,7 @@ export default function TambahWarga() {
 
 function AddressForm({ formData, setFormData, setIsFormValid }) {
   const [errorMessages, setErrorMessages] = useState({
-    firstName: "",
-    lastName: "",
+    Name: "",
     city: "",
     state: "",
     country: "",
@@ -188,43 +191,71 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    // Validasi input
     let isValid = true;
-    let errorMessagesCopy = { ...errorMessages }; // Buat salinan objek pesan kesalahan
+    let errorMessagesCopy = { ...errorMessages };
 
     const validationRules = {
-      firstName: /^[A-Z][a-zA-Z\s]*$/,
-      lastName: /^[A-Z][a-zA-Z\s]*$/,
-      city: /^[A-Z][a-zA-Z\s]*$/,
-      state: /^[A-Z][a-zA-Z\s]*$/,
-      country: /^[A-Z][a-zA-Z\s]*$/,
-      nik: (value) => value.length > 10 && !isNaN(Number(value)),
+        name: /^[A-Z][a-zA-Z\s]*$/,
+        city: /^[A-Z][a-zA-Z\s]*$/,
+        state: /^[A-Z][a-zA-Z\s]*$/,
+        country: /^[A-Z][a-zA-Z\s]*$/,
     };
 
     if (name in validationRules) {
-      if (typeof validationRules[name] === "function") {
-        isValid = validationRules[name](value);
-      } else {
-        isValid = validationRules[name].test(value);
-      }
+        if (typeof validationRules[name] === "function") {
+            isValid = validationRules[name](value);
+        } else {
+            isValid = validationRules[name].test(value);
+        }
     }
 
     if (!isValid) {
-      errorMessagesCopy[
-        name
-      ] = `${e.target.labels[0].innerText} harus diawali dengan huruf kapital`;
-    } else if (name in errorMessagesCopy) {
-      errorMessagesCopy[name] = ""; // Bersihkan pesan kesalahan jika valid
+        errorMessagesCopy[name] = `Huruf awal merupakan huruf besar`;
+    } else {
+        errorMessagesCopy[name] = ""; // Bersihkan pesan kesalahan jika valid
     }
 
     setErrorMessages(errorMessagesCopy);
-    setIsFormValid(isValid);
+    setIsFormValid(Object.values(errorMessagesCopy).every(message => !message));
 
     setFormData((prevData) => ({
-      ...prevData,
-      [name]: name === "image" ? files[0] : value,
+        ...prevData,
+        [name]: name === "image" ? files[0] : value,
     }));
-  };
+  }
+
+  const handleNik = (e) => {
+    const { name, value, files } = e.target;
+
+    let isValid = true;
+    let errorMessagesCopy = { ...errorMessages };
+
+    const validationRules = {
+        nik: (value) => !isNaN(Number(value)) && value.length === 16,
+    };
+
+    if (name in validationRules) {
+        if (typeof validationRules[name] === "function") {
+            isValid = validationRules[name](value);
+        } else {
+            isValid = validationRules[name].test(value);
+        }
+    }
+
+    if (!isValid) {
+        errorMessagesCopy[name] = `Harus angka dan 16 digit`;
+    } else {
+        errorMessagesCopy[name] = ""; 
+    }
+
+    setErrorMessages(errorMessagesCopy);
+    setIsFormValid(Object.values(errorMessagesCopy).every(message => !message));
+
+    setFormData((prevData) => ({
+        ...prevData,
+        [name]: name === "image" ? files[0] : value,
+    }));
+  }
 
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
@@ -246,36 +277,22 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
   return (
     <React.Fragment>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           <TextField
             required
-            id="firstName"
-            name="firstName"
-            label="First name"
+            id="nama"
+            name="name"
+            label="name"
             fullWidth
             autoComplete="given-name"
             variant="standard"
-            value={formData.firstName}
+            value={formData.name}
             onChange={handleChange}
-            error={!!errorMessages.firstName}
-            helperText={errorMessages.firstName}
+            error={!!errorMessages.name}
+            helperText={errorMessages.name}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="lastName"
-            name="lastName"
-            label="Last name"
-            fullWidth
-            autoComplete="family-name"
-            variant="standard"
-            value={formData.lastName}
-            onChange={handleChange}
-            error={!!errorMessages.lastName}
-            helperText={errorMessages.lastName}
-          />
-        </Grid>
+  
         <Grid item xs={12}>
           <TextField
             required
@@ -285,7 +302,7 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
             fullWidth
             variant="standard"
             value={formData.nik}
-            onChange={handleChange}
+            onChange={handleNik}
             error={!!errorMessages.nik}
             helperText={errorMessages.nik}
           />
@@ -396,8 +413,9 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
             zoom={13}
             style={{ height: "300px", width: "100%" }}
             onClick={handleMapClick}
-            onZoomEnd={handleZoomEnd}
+            onZoomEnd={handleZoomEnd}  
           >
+
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker
               position={[formData.coordinates.lat, formData.coordinates.lng]}
@@ -410,9 +428,22 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
                   popupAnchor: [0, -84],
                 })
               }
+              draggable={true}  // Aktifkan opsi draggable
+              eventHandlers={{
+                dragend: (e) => {
+                  const marker = e.target;
+                  const position = marker.getLatLng();
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    coordinates: { lat: position.lat, lng: position.lng },
+                  }));
+                },
+              }}
             >
               <Popup>Your selected location</Popup>
             </Marker>
+
+
           </MapContainer>
         </Grid>
       </Grid>
