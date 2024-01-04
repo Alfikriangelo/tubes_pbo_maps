@@ -28,7 +28,7 @@ export default function TambahWarga() {
     name: "",
     nik: "",
     address: "",
-    city: "",
+    ttl: "",
     state: "",
     zip: "",
     country: "",
@@ -185,7 +185,7 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
   const purpleOptions = { color: 'purple' }
   const [errorMessages, setErrorMessages] = useState({
     Name: "",
-    city: "",
+    ttl: "",
     state: "",
     country: "",
     nik: "",
@@ -212,7 +212,7 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
 
     const validationRules = {
         name: /^[A-Z][a-zA-Z\s]*$/,
-        city: /^[A-Z][a-zA-Z\s]*$/,
+        ttl: /^[A-Z][a-zA-Z\s]*$/,
         state: /^[A-Z][a-zA-Z\s]*$/,
         country: /^[A-Z][a-zA-Z\s]*$/,
     };
@@ -308,6 +308,21 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
             helperText={errorMessages.name}
           />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="ttl"
+            name="ttl"
+            label="Tempat dan Tanggal Lahir"
+            fullWidth
+            autoComplete="ttl"
+            variant="standard"
+            value={formData.ttl}
+            onChange={handleChange}
+            error={!!errorMessages.ttl}
+            helperText={errorMessages.ttl}
+          />
+        </Grid>
   
         <Grid item xs={12}>
           <TextField
@@ -335,21 +350,7 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
             onChange={handleChange}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="city"
-            name="city"
-            label="Kota"
-            fullWidth
-            autoComplete="city"
-            variant="standard"
-            value={formData.city}
-            onChange={handleChange}
-            error={!!errorMessages.city}
-            helperText={errorMessages.city}
-          />
-        </Grid>
+        
         <Grid item xs={12} sm={6}>
           <TextField
             id="state"

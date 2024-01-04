@@ -14,7 +14,7 @@ saved_file_data = {}
 # link fikri 'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
 # link darell 'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
 
-UPLOAD_FOLDER = r'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
+UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -67,13 +67,13 @@ def save_data():
         name = request.form['name']
         nik = request.form['nik']
         address = request.form['address']
-        city = request.form['city']
+        ttl = request.form['ttl']
         state = request.form['state']
         zip_code = request.form['zip']
         country = request.form['country']
 
         # Validasi data
-        if not name or not nik or not city or not state or not country:
+        if not name or not nik or not ttl or not state or not country:
             return jsonify({"error": "Semua kolom wajib diisi"}), 400
 
         if not nik.isdigit() or len(nik) != 16:
@@ -92,7 +92,7 @@ def save_data():
         print("Name:", name)
         print("NIK:", nik)
         print("Address:", address)
-        print("City:", city)
+        print("TTL:", ttl)
         print("State:", state)
         print("Zip Code:", zip_code)
         print("Country:", country)
