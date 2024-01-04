@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from pymongo import MongoClient 
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import os
 import json
 import os
@@ -10,7 +11,9 @@ app = Flask(__name__)
 CORS(app)
 saved_file_data = {}
 
-UPLOAD_FOLDER = r'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/api/api/uploads'
+# link fikri 'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
+
+UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -155,24 +158,34 @@ def get_photo(filename):
 def save_file_name():
     try:
         data = request.get_json()
-        nama = data.get('nama')  # Retrieve the "nama" value
-        fileName = data.get('fileName')
+        name = data.get('nama')
+        file_name = data.get('fileName')
 
-        # Save the data in the saved_file_data dictionary
-        saved_file_data[nama] = {'fileName': fileName}
+        # Save the data in JSON format
+        history_data = {'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'nama': name, 'fileName': file_name}
+
+        # Append history to a JSON file (Riwayat_surat.json)
+        with open('Riwayat_surat.txt', 'a') as history_file:
+            json.dump(history_data, history_file)
+            history_file.write('\n')
 
         return jsonify({"message": "File name saved successfully"})
     except Exception as e:
         return handle_error(e)
 
 
+
+
 @app.route('/get_saved_file_name', methods=['GET'])
 def get_saved_file_name():
     try:
-        global saved_file_data
-        return jsonify(saved_file_data)
+        with open('Riwayat_surat.txt', 'r') as history_file:
+            history_data = [json.loads(line.strip()) for line in history_file]
+
+        return jsonify({'history': history_data})
     except Exception as e:
         return handle_error(e)
+
 
 
 
