@@ -104,41 +104,41 @@ const Maps = () => {
       <TombolTambahWarga />
       <TombolTambahSurat />
 
-      <MapContainer center={[-6.957364598435201, 107.63310204139326]} zoom={15}>
+      <MapContainer center={[-7.0053677,107.6368018]} zoom={19}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
           <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
-  {data.map((item) => (
-    <Marker
-      key={item._id}
-      position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
-      icon={customIcon}
-    >
-      <Popup>
-        <div>
-          <p>Nama: {item.name}</p>
-          <p>NIK: {item.nik}</p>
-          <p>Alamat: {item.address}</p>
-          
-          {/* Check if surat and surat[item.name] are defined before accessing properties */}
-          
-          <p>Surat: {surat && surat[item.name] ? surat[item.name].fileName : 'Belum ada surat'}</p>
+          {data.map((item) => (
+            <Marker
+              key={item._id}
+              position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
+              icon={customIcon}
+            >
+              <Popup>
+                <div>
+                  <p>Nama: {item.name}</p>
+                  <p>NIK: {item.nik}</p>
+                  <p>Alamat: {item.address}</p>
+                  
+                  {/* Check if surat and surat[item.name] are defined before accessing properties */}
+                  
+                  <p>Surat: {surat && surat[item.name] ? surat[item.name].fileName : 'Belum ada surat'}</p>
 
-          {console.log(surat)}
-          {item.image_url && (
-            <img
-              src={item.image_url}
-              alt={item.name}
-              style={{ maxWidth: '100%', maxHeight: '150px' }}
-            />
-          )}
-          <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
-        </div>
-      </Popup>
-    </Marker>
-  ))}
+                  {console.log(surat)}
+                  {item.image_url && (
+                    <img
+                      src={item.image_url}
+                      alt={item.name}
+                      style={{ maxWidth: '100%', maxHeight: '150px' }}
+                    />
+                  )}
+                  <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
 </MarkerClusterGroup>
 
   
