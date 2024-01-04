@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from pymongo import MongoClient 
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import os
 import json
 import os
@@ -10,7 +11,9 @@ app = Flask(__name__)
 CORS(app)
 saved_file_data = {}
 
-UPLOAD_FOLDER = r'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/api/api/uploads'
+# link fikri 'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
+
+UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -155,24 +158,34 @@ def get_photo(filename):
 def save_file_name():
     try:
         data = request.get_json()
-        nama = data.get('nama')  # Retrieve the "nama" value
-        fileName = data.get('fileName')
+        name = data.get('nama')
+        file_name = data.get('fileName')
 
-        # Save the data in the saved_file_data dictionary
-        saved_file_data[nama] = {'fileName': fileName}
+        # Save the data in JSON format
+        history_data = {'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'nama': name, 'fileName': file_name}
+
+        # Append history to a JSON file (Riwayat_surat.json)
+        with open('Riwayat_surat.txt', 'a') as history_file:
+            json.dump(history_data, history_file)
+            history_file.write('\n')
 
         return jsonify({"message": "File name saved successfully"})
     except Exception as e:
         return handle_error(e)
 
 
+
+
 @app.route('/get_saved_file_name', methods=['GET'])
 def get_saved_file_name():
     try:
-        global saved_file_data
-        return jsonify(saved_file_data)
+        with open('Riwayat_surat.txt', 'r') as history_file:
+            history_data = [json.loads(line.strip()) for line in history_file]
+
+        return jsonify({'history': history_data})
     except Exception as e:
         return handle_error(e)
+
 
 
 
@@ -192,10 +205,19 @@ def login():
 @app.route('/get_multipolygon', methods=['GET'])
 def get_multipolygon():
     multi_polygon = [
-        [-6.955594410086734, 107.63432129269165],
-        [-6.95604058679135, 107.63654424977625],
-        [-6.960455407673797, 107.63564295935879],
-        [-6.959973454096144, 107.6333973753033]
+        [-7.004907588975661, 107.6361829016956],
+        [-7.005636781043971, 107.63607150547568],
+        [-7.005870158815059, 107.63695591129958],
+        [-7.005611151796026, 107.6370264065953],
+        [-7.005611151795504, 107.637238419831],
+        [-7.005373857896837, 107.6372970617887],
+        [-7.005280295178104, 107.6370170686941],
+        [-7.00521107833573, 107.6370197509031],
+        [-7.005203091776328, 107.63696610672356],
+        [-7.005453337239119, 107.63689100487228],
+        [-7.005328214520942, 107.6362606857531],
+        [-7.004907588975661, 107.63630360109948]
+
     ]
     return jsonify({'multiPolygon': multi_polygon})
 

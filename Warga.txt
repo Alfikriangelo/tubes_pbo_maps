@@ -1,1 +1,0 @@
-{"name": "Ryan Darell Adyatma", "nik": "1231212312322211", "address": "ASdaw", "city": "Adawfawf", "state": "ASdawfa", "zip": "123124", "country": "AFfawfasd", "coordinates": {"lat": -6.9740216814801705, "lng": 107.63274540478079}, "image": "C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/api/api/uploadsRyan_Darell_Adyatma_photo.png"}

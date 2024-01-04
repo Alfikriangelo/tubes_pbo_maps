@@ -12,13 +12,14 @@ import TextField from "@mui/material/TextField";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Typography as MuiTypography } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 import { DivIcon } from "leaflet";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faMapMarker } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 library.add(faMapMarker);
 
@@ -32,7 +33,8 @@ export default function TambahWarga() {
     zip: "",
     country: "",
     image: null,
-    coordinates: { lat: -6.2088, lng: 106.8456 },
+    coordinates: { lat:-7.0053677, lng: 107.6368018 },
+    
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -180,6 +182,8 @@ export default function TambahWarga() {
 }
 
 function AddressForm({ formData, setFormData, setIsFormValid }) {
+  const [multiPolygon, setMultiPolygon] = useState([]);
+  const purpleOptions = { color: 'purple' }
   const [errorMessages, setErrorMessages] = useState({
     Name: "",
     city: "",
@@ -187,6 +191,19 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
     country: "",
     nik: "",
   });
+
+  useEffect(() => {
+    const fetchMultiPolygon = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/get_multipolygon");
+        setMultiPolygon(response.data.multiPolygon);
+      } catch (error) {
+        console.error("Error fetching multiPolygon:", error);
+      }
+    };
+
+    fetchMultiPolygon();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -409,8 +426,8 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
         <Grid item xs={12}>
           <Typography>Tentukan Titik Rumah</Typography>
           <MapContainer
-            center={[formData.coordinates.lat, formData.coordinates.lng]}
-            zoom={13}
+            center={[-7.0053677,107.6368018]}
+            zoom={19}
             style={{ height: "300px", width: "100%" }}
             onClick={handleMapClick}
             onZoomEnd={handleZoomEnd}  
@@ -418,7 +435,7 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
 
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker
-              position={[formData.coordinates.lat, formData.coordinates.lng]}
+              position={[-7.0053677,107.6368018]}
               icon={
                 new DivIcon({
                   className: "custom-div-icon",
@@ -443,7 +460,7 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
               <Popup>Your selected location</Popup>
             </Marker>
 
-
+            <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
           </MapContainer>
         </Grid>
       </Grid>
