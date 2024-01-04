@@ -12,8 +12,9 @@ CORS(app)
 saved_file_data = {}
 
 # link fikri 'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
+# link darell 'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
 
-UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
+UPLOAD_FOLDER = r'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
