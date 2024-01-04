@@ -34,7 +34,6 @@ export default function TambahWarga() {
     country: "",
     image: null,
     coordinates: { lat:-7.0053677, lng: 107.6368018 },
-    
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -435,7 +434,7 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
 
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker
-              position={[-7.0053677,107.6368018]}
+              position={[formData.coordinates.lat, formData.coordinates.lng]}
               icon={
                 new DivIcon({
                   className: "custom-div-icon",
