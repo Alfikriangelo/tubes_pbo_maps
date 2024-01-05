@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 
-const SideBar = ({ isOpen, selectedMarkerData, onClose }) => {
+const SideBar = ({ isOpen, selectedMarkerData, surat,onClose }) => {
   return (
     <Sidebar collapsed={!isOpen} style={{width: 400}}>
       {selectedMarkerData && (
@@ -10,6 +10,16 @@ const SideBar = ({ isOpen, selectedMarkerData, onClose }) => {
           <p>Nama: {selectedMarkerData.name}</p>
           <p>NIK: {selectedMarkerData.nik}</p>
           <p>Alamat: {selectedMarkerData.address}</p>
+          <h3>Surat:</h3>
+          {surat && surat[selectedMarkerData.name]?.fileNames ? (
+            <ul>
+              {surat[selectedMarkerData.name].fileNames.map((fileName, index) => (
+                <li key={index}>{fileName}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>Belum ada surat</p>
+          )}
           <button onClick={onClose}>Tutup</button>
         </div>
       )}

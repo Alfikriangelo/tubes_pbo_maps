@@ -1,0 +1,1 @@
+{"name": "ALFIKRI", "nik": "2143413141211111", "address": "Jalan jalan", "ttl": "Pekanbaru", "state": "Riau", "zip": "223232", "country": "ID", "coordinates": {"lat": -7.005244846216745, "lng": 107.63638256557515}, "image": "C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploadsALFIKRI_photo.png"}
