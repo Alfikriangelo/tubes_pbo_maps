@@ -9,6 +9,7 @@ import TombolTambahSurat from '../Components/Surat/TombolTambahSurat';
 import TombolTambahWarga from '../Components/Maps/TombolTambahWarga.jsx';
 import TombolLogout from '../Components/Logout/tombolLogout';
 import { Button } from '@mui/material';
+import SideBar from '../Components/sideBar/SideBar.jsx';
 
 const customIcon = new Icon({
   iconUrl: require("../icons/placeholder.png"),
@@ -28,9 +29,17 @@ const Maps = () => {
   const [surat, setSurat] = useState([])
   const [multiPolygon, setMultiPolygon] = useState([]);
   const purpleOptions = { color: 'purple' }
+  const [selectedMarkerData, setSelectedMarkerData] = useState(null);
+  
+  const handleMarkerClick = (item) => {
+    setSelectedMarkerData(item);
+  };
+
+  const handleSidebarClose = () => {
+    setSelectedMarkerData(null);
+  };
 
   
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,51 +109,59 @@ const Maps = () => {
 
   return (
     <div className="app-container">
-      <TombolLogout />
-      <TombolTambahWarga />
-      <TombolTambahSurat />
+      <div className='sidebar-container'>
+        <SideBar selectedMarkerData={selectedMarkerData} onClose={handleSidebarClose} />
+      </div>
 
-      <MapContainer center={[-7.0053677,107.6368018]} zoom={19}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-          <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
-          {data.map((item) => (
-            <Marker
-              key={item._id}
-              position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
-              icon={customIcon}
-            >
-              <Popup>
-                <div>
-                  <p>Nama: {item.name}</p>
-                  <p>NIK: {item.nik}</p>
-                  <p>Alamat: {item.address}</p>
-                  
-                  {/* Check if surat and surat[item.name] are defined before accessing properties */}
-                  
-                  <p>Surat: {surat && surat[item.name] ? surat[item.name].fileName : 'Belum ada surat'}</p>
+      <div className='map-container'>
+        <TombolLogout />
+        <TombolTambahWarga />
+        <TombolTambahSurat />
 
-                  {console.log(surat)}
-                  {item.image_url && (
-                    <img
-                      src={item.image_url}
-                      alt={item.name}
-                      style={{ maxWidth: '100%', maxHeight: '150px' }}
-                    />
-                  )}
-                  <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-</MarkerClusterGroup>
+        <MapContainer center={[-7.0053677,107.6368018]} zoom={19}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+            <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
+            {data.map((item) => (
+              <Marker
+                key={item._id}
+                position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
+                icon={customIcon}
+                eventHandlers={{ click: () => handleMarkerClick(item) }}
+              >
+                <Popup>
+                  <div>
+                    <p>Nama: {item.name}</p>
+                    <p>NIK: {item.nik}</p>
+                    <p>Alamat: {item.address}</p>
+                    
+                    {/* Check if surat and surat[item.name] are defined before accessing properties */}
+                    
+                    <p>Surat: {surat && surat[item.name] ? surat[item.name].fileName : 'Belum ada surat'}</p>
 
-  
+                    {console.log(surat)}
+                    {item.image_url && (
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        style={{ maxWidth: '100%', maxHeight: '150px' }}
+                      />
+                    )}
+                    <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MarkerClusterGroup>
 
-        <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
-      </MapContainer>
+    
+
+          <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
+        </MapContainer>
+      </div>
+      
     </div>
   );
 }

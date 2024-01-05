@@ -75,7 +75,6 @@ const Surat = () => {
     const fetchData = async () => {
       try {
         const responseData = await axios.get('http://127.0.0.1:5000/get_saved_data');
-        const namesArray = responseData.data.savedData.map((item) => item.name);
         setData(responseData.data.savedData);
       } catch (error) {
         console.error('Error:', error);

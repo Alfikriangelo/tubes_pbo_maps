@@ -27,3 +27,11 @@
     right: 230px; 
     z-index: 1000; 
   }
+  .sidebar-container{
+    position: absolute;
+    top: 0px;
+    left: 0px; 
+    z-index: 2000; 
+    background-color: white;
+
+  }
