@@ -196,6 +196,7 @@ const Maps = () => {
                     icon={customIcon}
                     eventHandlers={{ click: () => handleMarkerClick(item) }}
                   >
+                    {console.log("ini coor:",item.coordinates)}
                     <Popup>
                       <div>
                         <p>Nama: {item.name}</p>
