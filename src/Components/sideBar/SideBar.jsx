@@ -2,10 +2,10 @@ import React from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 import { X, MapPin } from 'lucide-react';
 import './SideBar.css'
-import { auto, right } from '@popperjs/core';
+import { Button } from '@mui/material';
 
 
-const SideBar = ({ isOpen, selectedMarkerData, surat,onClose }) => {
+const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
   return (
     <Sidebar collapsed={!isOpen} style={{ width: 400 }}>
       {selectedMarkerData && (
@@ -47,11 +47,16 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose }) => {
             <span className='see-all'>See all</span> 
           </div>
           <div className='container-isi'>
-          Nama: {selectedMarkerData.name}
-          NIK: {selectedMarkerData.nik}
-          Alamat: {selectedMarkerData.address}
+          <div className='row1'>
+              <span className='nama'>Nama</span>
+            </div>
+            <div className='row2'>
+              <span className='warga-name'>{selectedMarkerData.name}</span>
+              <span className='see-more'>See more</span>
+            </div>
+            <hr className='container-line'/>
           </div>
-        
+          <Button className='delete' variant="outlined" color='error' onClick={() => hapus(selectedMarkerData.name)}>Hapus</Button>
         </div>
       )}
     </Sidebar>

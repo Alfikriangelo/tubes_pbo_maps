@@ -128,7 +128,7 @@ const Maps = () => {
   return (
     <div className="app-container">
       <div className='sidebar-container'>
-        <SideBar selectedMarkerData={selectedMarkerData} surat={surat} onClose={handleSidebarClose} />
+        <SideBar selectedMarkerData={selectedMarkerData} surat={surat} onClose={handleSidebarClose} hapus={handleDelete} />
       </div>
 
       <div className="search-bar-container">

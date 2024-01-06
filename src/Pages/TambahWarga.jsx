@@ -440,9 +440,9 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
                 new DivIcon({
                   className: "custom-div-icon",
                   html: '<div><i class="fas fa-map-marker-alt fa-5x" alt="Marker Location"></i></div>',
-                  iconSize: [0, 0],
-                  iconAnchor: [0, 0],
-                  popupAnchor: [0, 0],
+                  iconSize: [10, 0],
+                  iconAnchor: [22, 40],
+                  popupAnchor: [0, -40],
                 })
               }
               draggable={true}  // Aktifkan opsi draggable
