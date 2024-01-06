@@ -1,20 +1,108 @@
-/* SideBar.css */
+@import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 
-.sidebar-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100%;
-    background-color: #f0f0f0;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sidebar-container h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-  }
-  
-  /* Tambahkan gaya lainnya sesuai kebutuhan */
-  
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: rgb(0, 0, 0);
+  margin: 0;
+  padding: 0;
+ }
+ 
+ .container {
+  position: relative;
+  max-width: 3300px;
+  background-color: #F7F7F6;
+  margin: 0px;
+  margin-left: 0px;
+  padding: 0px;
+ }
+
+ .header1{
+  color: #202124;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 28px;
+  padding: 16px 24px 0px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: '8px';
+ }
+ 
+ .pin{
+  display: flex;
+  position: relative;
+  padding-right: 2px;
+  color: #70757a;
+ }
+.alamat{
+  width: 400px;
+  padding-left: 10px;
+  color: #70757a;
+  font-weight: 100;
+  font-family: Arial;
+  padding: 0px 24px 4px 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  gap: '8px';
+}
+
+.detail-container{
+  margin: 20px 16px 5px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.detail{
+  color: #000000;
+  font-family: "SF Pro Display-Semibold", Helvetica;
+  font-size: 20px;
+  font-weight: bold;
+
+}
+
+.see-all{
+  font-size: medium;
+  margin-left: 236px;
+  cursor: pointer;
+  color: #1a73e8;
+}
+
+.container-isi {
+  display: flex;
+  position: relative;
+  margin-left: 16px;
+  align-items: stretch;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  flex-direction: column;
+  width: 365px;
+}
+
+hr {
+  margin: 10px 20px;
+  width: 370px;
+  border: none;
+  border-top: 1px solid #000;
+ }
+
+
+ /* h1 {
+  width: 350px;
+  height: 60px;
+  margin-left: 0px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: 'Sora', sans-serif;
+  background-color: rgb(255, 255, 255);
+  color: #3e0d7f;
+  padding: 10px;
+  border-bottom: 3px solid #3e0d7f;
+  border-radius: 2px;
+ } */
+ 
