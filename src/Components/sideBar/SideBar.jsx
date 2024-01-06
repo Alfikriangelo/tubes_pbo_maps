@@ -5,7 +5,7 @@ import './SideBar.css'
 import { auto, right } from '@popperjs/core';
 
 
-const SideBar = ({ isOpen, selectedMarkerData, onClose }) => {
+const SideBar = ({ isOpen, selectedMarkerData, surat,onClose }) => {
   return (
     <Sidebar collapsed={!isOpen} style={{ width: 400 }}>
       {selectedMarkerData && (

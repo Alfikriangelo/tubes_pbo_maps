@@ -162,13 +162,27 @@ def save_file_name():
         name = data.get('nama')
         file_name = data.get('fileName')
 
-        # Save the data in JSON format
-        history_data = {'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'nama': name, 'fileName': file_name}
+        # Baca data file Riwayat_surat.txt
+        with open('Riwayat_surat.txt', 'r') as history_file:
+            history_data = [json.loads(line.strip()) for line in history_file]
 
-        # Append history to a JSON file (Riwayat_surat.json)
-        with open('Riwayat_surat.txt', 'a') as history_file:
-            json.dump(history_data, history_file)
-            history_file.write('\n')
+        # Temukan entri yang sesuai dengan nama
+        entry_found = False
+        for entry in history_data:
+            if entry['nama'] == name:
+                entry_found = True
+                entry['fileNames'].append(file_name)
+                break
+
+        # Jika entri tidak ditemukan, tambahkan entri baru
+        if not entry_found:
+            history_data.append({'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'nama': name, 'fileNames': [file_name]})
+
+        # Tulis kembali data ke dalam file Riwayat_surat.txt
+        with open('Riwayat_surat.txt', 'w') as history_file:
+            for entry in history_data:
+                json_data = json.dumps(entry, default=str, ensure_ascii=False)
+                history_file.write(json_data + '\n')
 
         return jsonify({"message": "File name saved successfully"})
     except Exception as e:
@@ -183,10 +197,19 @@ def get_saved_file_name():
         with open('Riwayat_surat.txt', 'r') as history_file:
             history_data = [json.loads(line.strip()) for line in history_file]
 
-        return jsonify({'history': history_data})
+        result_data = []
+
+        for entry in history_data:
+            result_entry = {
+                "timestamp": entry["timestamp"],
+                "nama": entry["nama"],
+                "fileNames": entry["fileNames"]
+            }
+            result_data.append(result_entry)
+
+        return jsonify({'history': result_data})
     except Exception as e:
         return handle_error(e)
-
 
 
 

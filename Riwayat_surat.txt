@@ -1,3 +1,1 @@
-{"timestamp": "2024-01-04 19:28:54", "nama": "ALFIKRI", "fileName": "surat_666_ALFIKRI.pdf"}
-{"timestamp": "2024-01-04 19:29:19", "nama": "ALFIKRI", "fileName": "surat_123123_ALFIKRI.pdf"}
-{"timestamp": "2024-01-04 20:31:15", "nama": "Ryan", "fileName": "surat_12312_Ryan.pdf"}
+{"timestamp": "2024-01-06 00:35:43", "nama": "ALFIKRI", "fileNames": ["surat_11_ALFIKRI.pdf", "surat_11_ALFIKRI.pdf", "surat_ahhaha_ALFIKRI.pdf"]}

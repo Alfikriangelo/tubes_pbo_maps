@@ -87,11 +87,13 @@ const Maps = () => {
         const formattedData = {};
   
         response.data.history.forEach(item => {
-          const { fileName, nama } = item;
+          const { fileNames, nama } = item;
   
           // Pastikan nama tersebut belum ada dalam formattedData
           if (!formattedData[nama]) {
-            formattedData[nama] = { fileName };
+            formattedData[nama] = { fileNames };
+          } else {
+            formattedData[nama].fileNames.push(...fileNames);
           }
         });
   
@@ -104,13 +106,11 @@ const Maps = () => {
     getSavedFileName();
   }, []);
   
-  
-
 
   return (
     <div className="app-container">
       <div className='sidebar-container'>
-        <SideBar selectedMarkerData={selectedMarkerData} onClose={handleSidebarClose} />
+        <SideBar selectedMarkerData={selectedMarkerData} surat={surat} onClose={handleSidebarClose} />
       </div>
 
       <div className='map-container'>
@@ -137,10 +137,6 @@ const Maps = () => {
                     <p>NIK: {item.nik}</p>
                     <p>Alamat: {item.address}</p>
                     
-                    {/* Check if surat and surat[item.name] are defined before accessing properties */}
-                    
-                    <p>Surat: {surat && surat[item.name] ? surat[item.name].fileName : 'Belum ada surat'}</p>
-
                     {console.log(surat)}
                     {item.image_url && (
                       <img
