@@ -173,7 +173,7 @@ const Maps = () => {
                       <p>Nama: {item.name}</p>
                       <p>NIK: {item.nik}</p>
                       <p>Alamat: {item.address}</p>
-                      
+                      <p>Surat: {surat && surat[item.name] ? surat[item.name].fileNames : 'Belum ada surat'}</p>
                       {console.log(surat)}
                       {item.image_url && (  
                         <img
@@ -199,7 +199,7 @@ const Maps = () => {
                       <p>Nama: {item.name}</p>
                       <p>NIK: {item.nik}</p>
                       <p>Alamat: {item.address}</p>
-                      
+                      <p>Surat: {surat && surat[item.name] ? surat[item.name].fileNames : 'Belum ada surat'}</p>
                       {console.log(surat)}
                       {item.image_url && (
                         <img
