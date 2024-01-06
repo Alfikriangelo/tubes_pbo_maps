@@ -20,7 +20,7 @@ const TombolTambahWarga = () => {
   return (
     <div className="app-container">
       <div className="tombol-warga">
-        <Button variant="contained" onClick={handleWargaClick}>
+        <Button variant="contained" onClick={handleWargaClick} style={{textTransform: 'none'}}>
           Warga
         </Button>
       </div>
