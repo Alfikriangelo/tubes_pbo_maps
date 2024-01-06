@@ -7,20 +7,20 @@ body {
   color: rgb(0, 0, 0);
   margin: 0;
   padding: 0;
- }
- 
- .container {
+}
+
+.container {
   position: relative;
   max-width: 3300px;
   background-color: #F7F7F6;
   margin: 0px;
   margin-left: 0px;
   padding: 0px;
- }
+}
 
- .header1{
+.header1 {
   color: #202124;
-  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
   font-size: 22px;
   font-style: normal;
   font-weight: bold;
@@ -29,15 +29,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: '8px';
- }
- 
- .pin{
+}
+
+.pin {
   display: flex;
   position: relative;
   padding-right: 2px;
   color: #70757a;
- }
-.alamat{
+}
+
+.alamat {
   width: 400px;
   padding-left: 10px;
   color: #70757a;
@@ -50,21 +51,21 @@ body {
   gap: '8px';
 }
 
-.detail-container{
+.detail-container {
   margin: 20px 16px 5px 16px;
   display: flex;
   align-items: center;
 }
 
-.detail{
+.detail {
   color: #000000;
-  font-family: "SF Pro Display-Semibold", Helvetica;
+  font-family: Helvetica;
   font-size: 20px;
   font-weight: bold;
 
 }
 
-.see-all{
+.see-all {
   font-size: medium;
   margin-left: 236px;
   cursor: pointer;
@@ -83,26 +84,66 @@ body {
   width: 365px;
 }
 
-hr {
+.row1 {
+  display: flex;
+  flex-direction: column;
+}
+
+.row2 {
+  display: flex;
+  flex-direction: row;
+}
+
+.nama {
+  width: 400px;
+  padding-left: 0px;
+  color: #70757a;
+  font-size: small;
+  font-weight: 100;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+  text-align: left;
+}
+
+.see-more {
+  width: 400px;
+  padding-left: 0px;
+  color: #1a73e8;
+  font-weight: 100;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+  text-align: right;
+}
+
+.warga-name {
+  width: 400px;
+  padding-left: 0px;
+  color: #000000;
+  font-weight: normal;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+  text-align: left;
+}
+
+.header-line {
   margin: 10px 20px;
-  width: 370px;
+  width: 360px;
   border: none;
-  border-top: 1px solid #000;
- }
+  border-top: 2px solid #BDBDBD;
+}
 
-
- /* h1 {
+.container-line {
   width: 350px;
-  height: 60px;
-  margin-left: 0px;
-  text-align: center;
-  font-size: 30px;
-  font-weight: bold;
-  font-family: 'Sora', sans-serif;
-  background-color: rgb(255, 255, 255);
-  color: #3e0d7f;
-  padding: 10px;
-  border-bottom: 3px solid #3e0d7f;
-  border-radius: 2px;
- } */
- 
+  margin-top: 8px;
+  border-top: 1px solid #BDBDBD;
+}
+
+.delete {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  align-content: center;
+}
+
+.delete button {
+  margin-top: 10px; /* Sesuaikan jarak dari tombol ke elemen atasnya */
+  width: 100%; /* Menyesuaikan lebar tombol dengan lebar elemen induknya */
+}

@@ -218,9 +218,6 @@ const Maps = () => {
             ))}
 
           </MarkerClusterGroup>
-
-    
-
           <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
         </MapContainer>
       </div>
