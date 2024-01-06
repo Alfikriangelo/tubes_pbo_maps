@@ -1,25 +1,23 @@
-import {React, useState} from 'react';
+import React from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 import { X, MapPin } from 'lucide-react';
 import './SideBar.css'
-import { Button } from '@mui/material';
+import { auto, right } from '@popperjs/core';
 
 
-const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus}) => {
-
+const SideBar = ({ isOpen, selectedMarkerData, surat,onClose }) => {
   return (
     <Sidebar collapsed={!isOpen} style={{ width: 400 }}>
       {selectedMarkerData && (
         <div className='container' style={{ padding: 0, height: '100vh', position: 'relative' }}>
-          
           <button onClick={onClose} style={{
             marginLeft: '360px',
             marginTop: '5px',
             position: 'absolute',
             backgroundColor: 'white',
             borderRadius: '36px',
-            display: 'flex',
-            padding: '3px'
+            display:'flex',
+            padding:'3px'
           }}><X />
           </button>
           {/* <h1>
@@ -38,27 +36,22 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus}) => {
             }}
           />
           <div className='header1'>
-            {selectedMarkerData.name}
+          {selectedMarkerData.name}
           </div>
           <div className='alamat'>
-            <MapPin className='pin' />{selectedMarkerData.address}
+          <MapPin className='pin'/>{selectedMarkerData.address}
           </div>
-          <hr className='header-line'/>
+          <hr/>
           <div className='detail-container'>
-            <span className='detail'>Details</span>
-            <span className='see-all'>See all</span>
+            <span className='detail'>Details</span> 
+            <span className='see-all'>See all</span> 
           </div>
           <div className='container-isi'>
-            <div className='row1'>
-              <span className='nama'>Nama</span>
-            </div>
-            <div className='row2'>
-              <span className='warga-name'>{selectedMarkerData.name}</span>
-              <span className='see-more'>See more</span>
-            </div>
-            <hr className='container-line'/>
+          Nama: {selectedMarkerData.name}
+          NIK: {selectedMarkerData.nik}
+          Alamat: {selectedMarkerData.address}
           </div>
-          <Button className='delete' variant="outlined" color='error' onClick={() => hapus(selectedMarkerData.name)}>Hapus</Button>
+        
         </div>
       )}
     </Sidebar>

@@ -134,23 +134,6 @@ const Maps = () => {
         <SideBar selectedMarkerData={selectedMarkerData} surat={surat} onClose={handleSidebarClose} />
       </div>
 
-      <div className="search-bar-container">
-      <TextField
-        label="Nama Penduduk"
-        variant="outlined"
-        value={searchInput}
-        onChange={handleSearchInputChange}
-        onKeyDown={handleKeyDown}  // Add this line to handle key events
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon onClick={handleSearch} style={{ cursor: 'pointer' }} />
-            </InputAdornment>
-          ),
-        }}
-      />
-      </div>
-
       <div className='map-container'>
         <TombolLogout />
         <TombolTambahWarga />
@@ -162,62 +145,37 @@ const Maps = () => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
             <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
-            {searchResults.length > 0
-              ? searchResults.map((item) => (
-                  <Marker
-                    key={item._id}
-                    position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
-                    icon={customIcon}
-                    eventHandlers={{ click: () => handleMarkerClick(item) }}
-                  >
-                    <Popup>
-                      <div>
-                        <p>Nama: {item.name}</p>
-                        <p>NIK: {item.nik}</p>
-                        <p>Alamat: {item.address}</p>
-                        
-                        {console.log(surat)}
-                        {item.image_url && (
-                          <img
-                            src={item.image_url}
-                            alt={item.name}
-                            style={{ maxWidth: '100%', maxHeight: '150px' }}
-                          />
-                        )}
-                        <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))
-              : data.map((item) => (
-                  <Marker
-                    key={item._id}
-                    position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
-                    icon={customIcon}
-                    eventHandlers={{ click: () => handleMarkerClick(item) }}
-                  >
-                    {console.log("ini coor:",item.coordinates)}
-                    <Popup>
-                      <div>
-                        <p>Nama: {item.name}</p>
-                        <p>NIK: {item.nik}</p>
-                        <p>Alamat: {item.address}</p>
-                        
-                        {console.log(surat)}
-                        {item.image_url && (
-                          <img
-                            src={item.image_url}
-                            alt={item.name}
-                            style={{ maxWidth: '100%', maxHeight: '150px' }}
-                          />
-                        )}
-                        <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
-                      </div>
-                    </Popup>
-                  </Marker>
+            {data.map((item) => (
+              <Marker
+                key={item._id}
+                position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
+                icon={customIcon}
+                eventHandlers={{ click: () => handleMarkerClick(item) }}
+              >
+                <Popup>
+                  <div>
+                    <p>Nama: {item.name}</p>
+                    <p>NIK: {item.nik}</p>
+                    <p>Alamat: {item.address}</p>
+                    
+                    {console.log(surat)}
+                    {item.image_url && (
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        style={{ maxWidth: '100%', maxHeight: '150px' }}
+                      />
+                    )}
+                    <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
+                  </div>
+                </Popup>
+              </Marker>
             ))}
 
           </MarkerClusterGroup>
+
+    
+
           <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
         </MapContainer>
       </div>
