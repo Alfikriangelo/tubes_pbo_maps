@@ -8,8 +8,9 @@ import axios from "axios";
 import TombolTambahSurat from '../Components/Surat/TombolTambahSurat';
 import TombolTambahWarga from '../Components/Maps/TombolTambahWarga.jsx';
 import TombolLogout from '../Components/Logout/tombolLogout';
-import { Button } from '@mui/material';
+import { Button, InputAdornment, TextField } from '@mui/material';
 import SideBar from '../Components/sideBar/SideBar.jsx';
+import SearchIcon from '@mui/icons-material/Search';
 
 const customIcon = new Icon({
   iconUrl: require("../icons/placeholder.png"),
@@ -26,11 +27,26 @@ const createClusterCustomIcon = function (cluster) {
 
 const Maps = () => {
   const [data, setData] = useState([]);
-  const [surat, setSurat] = useState([])
+  const [surat, setSurat] = useState([]);
   const [multiPolygon, setMultiPolygon] = useState([]);
-  const purpleOptions = { color: 'purple' }
+  const purpleOptions = { color: 'purple' };
   const [selectedMarkerData, setSelectedMarkerData] = useState(null);
-  
+  const [searchInput, setSearchInput] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearchInputChange = (event) => {
+    setSearchInput(event.target.value);
+  };
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:5000/get_saved_data?search=${searchInput}`);
+      setSearchResults(response.data.savedData);
+    } catch (error) {
+      console.error("Error searching data:", error);
+    }
+  };
+
   const handleMarkerClick = (item) => {
     setSelectedMarkerData(item);
   };
@@ -38,8 +54,6 @@ const Maps = () => {
   const handleSidebarClose = () => {
     setSelectedMarkerData(null);
   };
-
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,8 +67,6 @@ const Maps = () => {
 
     fetchData();
   }, []);
-
-  
 
   useEffect(() => {
     const fetchMultiPolygon = async () => {
@@ -85,10 +97,10 @@ const Maps = () => {
       try {
         const response = await axios.get("http://127.0.0.1:5000/get_saved_file_name");
         const formattedData = {};
-  
+
         response.data.history.forEach(item => {
           const { fileNames, nama } = item;
-  
+
           // Pastikan nama tersebut belum ada dalam formattedData
           if (!formattedData[nama]) {
             formattedData[nama] = { fileNames };
@@ -96,7 +108,7 @@ const Maps = () => {
             formattedData[nama].fileNames.push(...fileNames);
           }
         });
-  
+
         setSurat(formattedData);
         console.log("Formatted Data:", formattedData);
       } catch (error) {
@@ -105,12 +117,36 @@ const Maps = () => {
     };
     getSavedFileName();
   }, []);
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
   
 
   return (
     <div className="app-container">
       <div className='sidebar-container'>
         <SideBar selectedMarkerData={selectedMarkerData} surat={surat} onClose={handleSidebarClose} />
+      </div>
+
+      <div className="search-bar-container">
+      <TextField
+        label="Nama Penduduk"
+        variant="outlined"
+        value={searchInput}
+        onChange={handleSearchInputChange}
+        onKeyDown={handleKeyDown}  // Add this line to handle key events
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon onClick={handleSearch} style={{ cursor: 'pointer' }} />
+            </InputAdornment>
+          ),
+        }}
+      />
+
       </div>
 
       <div className='map-container'>
@@ -123,41 +159,65 @@ const Maps = () => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-            <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
-            {data.map((item) => (
-              <Marker
-                key={item._id}
-                position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
-                icon={customIcon}
-                eventHandlers={{ click: () => handleMarkerClick(item) }}
-              >
-                <Popup>
-                  <div>
-                    <p>Nama: {item.name}</p>
-                    <p>NIK: {item.nik}</p>
-                    <p>Alamat: {item.address}</p>
-                    
-                    {console.log(surat)}
-                    {item.image_url && (
-                      <img
-                        src={item.image_url}
-                        alt={item.name}
-                        style={{ maxWidth: '100%', maxHeight: '150px' }}
-                      />
-                    )}
-                    <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+          <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterCustomIcon}>
+            {searchResults.length > 0
+              ? searchResults.map((item) => (
+                  <Marker
+                    key={item._id}
+                    position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
+                    icon={customIcon}
+                    eventHandlers={{ click: () => handleMarkerClick(item) }}
+                  >
+                  <Popup>
+                    <div>
+                      <p>Nama: {item.name}</p>
+                      <p>NIK: {item.nik}</p>
+                      <p>Alamat: {item.address}</p>
+                      
+                      {console.log(surat)}
+                      {item.image_url && (  
+                        <img
+                          src={item.image_url}
+                          alt={item.name}
+                          style={{ maxWidth: '100%', maxHeight: '150px' }}
+                        />
+                      )}
+                      <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
+                    </div>
+                  </Popup>
+                  </Marker>
+                ))
+              : data.map((item) => (
+                  <Marker
+                    key={item._id}
+                    position={item.coordinates ? [item.coordinates.lat, item.coordinates.lng] : [0, 0]}
+                    icon={customIcon}
+                    eventHandlers={{ click: () => handleMarkerClick(item) }}
+                  >
+                  <Popup>
+                    <div>
+                      <p>Nama: {item.name}</p>
+                      <p>NIK: {item.nik}</p>
+                      <p>Alamat: {item.address}</p>
+                      
+                      {console.log(surat)}
+                      {item.image_url && (
+                        <img
+                          src={item.image_url}
+                          alt={item.name}
+                          style={{ maxWidth: '100%', maxHeight: '150px' }}
+                        />
+                      )}
+                      <Button style={{marginTop: 10, width: "100%"}} variant="outlined" color='error' onClick={() => handleDelete(item.name)}>Hapus</Button>
+                    </div>
+                  </Popup>
+                  </Marker>
+                ))}
           </MarkerClusterGroup>
-
-    
 
           <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
         </MapContainer>
       </div>
-      
     </div>
   );
 }
