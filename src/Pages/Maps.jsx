@@ -110,7 +110,7 @@ const Maps = () => {
   return (
     <div className="app-container">
       <div className='sidebar-container'>
-        <SideBar selectedMarkerData={selectedMarkerData} surat={surat} onClose={handleSidebarClose} />
+        <SideBar selectedMarkerData={selectedMarkerData} surat={surat} onClose={handleSidebarClose} hapus={handleDelete} />
       </div>
 
       <div className='map-container'>
@@ -137,7 +137,6 @@ const Maps = () => {
                     <p>NIK: {item.nik}</p>
                     <p>Alamat: {item.address}</p>
                     
-                    {console.log(surat)}
                     {item.image_url && (
                       <img
                         src={item.image_url}
@@ -151,9 +150,6 @@ const Maps = () => {
               </Marker>
             ))}
           </MarkerClusterGroup>
-
-    
-
           <Polygon pathOptions={purpleOptions} positions={multiPolygon} />
         </MapContainer>
       </div>
