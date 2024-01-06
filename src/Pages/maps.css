@@ -9,22 +9,22 @@
   
   .tombol-warga {
     position: absolute;
-    top: 25px;
-    right: 480px;
+    top: 10px;
+    right: 120px;
     z-index: 1000; 
   }
  
   .tombol-logout {
     position: absolute;
-    top: 25px;
-    right: 20px; 
+    top: 10px;
+    right: 10px; 
     z-index: 1000; 
   }
 
   .tombol-surat {
     position: absolute;
-    top: 25px;
-    right: 390px; 
+    top: 10px;
+    right: 230px; 
     z-index: 1000; 
   }
   .sidebar-container{
@@ -35,23 +35,3 @@
     background-color: white;
 
   }
-  .search-bar-container {
-    position: absolute;
-    right: 130px;
-    z-index: 2000; 
-    background-color: rgb(255, 255, 255);
-    border-radius: 15px;
-    top: 15px;
-  }
-  
-  /* Remove borders from TextField */
-  .search-bar-container .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-  
-  /* Remove box shadow on focus */
-  .search-bar-container .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    box-shadow: none;
-  }
-  
-  

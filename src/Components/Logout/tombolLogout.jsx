@@ -19,7 +19,7 @@ const TombolLogout = () => {
 
   return (
       <div className="tombol-logout">
-        <Button variant="contained" color='error' onClick={handleLogoutClick} style={{textTransform: 'none'}}>
+        <Button variant="contained" color='error' onClick={handleLogoutClick}>
           Logout
         </Button> 
     </div>

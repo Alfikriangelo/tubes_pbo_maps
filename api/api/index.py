@@ -112,14 +112,10 @@ def save_data():
 @app.route('/get_saved_data', methods=['GET'])
 def get_saved_data():
     try:
-        search_query = request.args.get('search')
         with open('Warga.txt', 'r') as file:
             saved_data = [json.loads(line.strip()) for line in file]
 
         # Tambahkan URL foto ke setiap data yang diambil
-        if search_query:
-            saved_data = [data for data in saved_data if data.get('name', '').lower().startswith(search_query.lower())]
-            
         for data in saved_data:
             if 'image' in data:
                 data['image_url'] = f'http://127.0.0.1:5000/get_photo/{os.path.basename(data["image"])}'

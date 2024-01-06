@@ -8,9 +8,8 @@ import axios from "axios";
 import TombolTambahSurat from '../Components/Surat/TombolTambahSurat';
 import TombolTambahWarga from '../Components/Maps/TombolTambahWarga.jsx';
 import TombolLogout from '../Components/Logout/tombolLogout';
-import { Button,  InputAdornment, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import SideBar from '../Components/sideBar/SideBar.jsx';
-import SearchIcon from '@mui/icons-material/Search';
 
 const customIcon = new Icon({
   iconUrl: require("../icons/placeholder.png"),
@@ -31,21 +30,6 @@ const Maps = () => {
   const [multiPolygon, setMultiPolygon] = useState([]);
   const purpleOptions = { color: 'purple' }
   const [selectedMarkerData, setSelectedMarkerData] = useState(null);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-
-  const handleSearchInputChange = (event) => {
-    setSearchInput(event.target.value);
-  };
-
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`http://127.0.0.1:5000/get_saved_data?search=${searchInput}`);
-      setSearchResults(response.data.savedData);
-    } catch (error) {
-      console.error("Error searching data:", error);
-    }
-  };
   
   const handleMarkerClick = (item) => {
     setSelectedMarkerData(item);
@@ -122,11 +106,6 @@ const Maps = () => {
     getSavedFileName();
   }, []);
   
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleSearch();
-    }
-  };
 
   return (
     <div className="app-container">
@@ -171,7 +150,6 @@ const Maps = () => {
                 </Popup>
               </Marker>
             ))}
-
           </MarkerClusterGroup>
 
     

@@ -19,7 +19,7 @@ const TombolTambahSurat = () => {
 
   return (
     <div className='tombol-surat'>
-      <Button variant='contained' onClick={handleSuratClick} style={{textTransform: 'none'}}>
+      <Button variant='contained' onClick={handleSuratClick}>
         Surat
       </Button>
     </div>
