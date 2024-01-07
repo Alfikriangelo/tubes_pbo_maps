@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, Response ,send_from_directory
 from pymongo import MongoClient 
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -39,11 +39,180 @@ def ensure_upload_folder():
         os.makedirs(UPLOAD_FOLDER)
 
 def save_to_file(data):
-    clean_data = {key: value.replace('\\', '') if isinstance(value, str) else value for key, value in data.items()}
+    relevant_data = {
+        "name": [],
+        "nik": [],
+        "address": [],
+        "dataAyah": [],
+        "KTP": []
+    }
+
+    data_ayah = {
+        "ttl": data.get("ttl", ""),
+        "job": data.get("job", ""),
+        "blok": data.get("blok", ""),
+        "no": data.get("no", ""),
+        "lastEdu": data.get("lastEdu", ""),
+        "coordinates": data.get("coordinates", ""),
+        "status": data.get("status", ""),
+        "jumlahAnak": data.get("jumlahAnak", ""),
+        "jumlahIstri": data.get("jumlahIstri", ""),
+        "maritalStatus": data.get("maritalStatus", ""),
+        "fotoKK": data.get("fotoKK", "")
+    }
+
+    if any(data_ayah.values()):
+        relevant_data["dataAyah"].append(data_ayah)
+
+    nama_istri_list = []
+    nama_anak_list = []
+    i = 1
+
+# Mengumpulkan nama istri dari data
+    while True:
+        key_nama_istri = f"namaIstri{i}"
+        nama_istri = data.get(key_nama_istri, "")
+    
+        if nama_istri:
+            nama_istri_list.append(nama_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    while True:
+        key_nama_anak = f"namaAnak{i}"
+
+        nama_anak = data.get(key_nama_anak, "")
+    
+        if nama_anak:
+            nama_anak_list.append(nama_anak)
+            i += 1
+        else:
+            break
+
+    name_data = {
+        "father": data.get("name", ""),
+        "mother": nama_istri_list,
+        "anak": nama_anak_list
+    }
+
+    if any(name_data.values()):
+        relevant_data["name"].append(name_data)
+
+    nik_istri_list = []
+    nik_anak_list = []
+    i = 1
+
+# Mengumpulkan nama istri dari data
+    while True:
+        key_nik_istri = f"nikIstri{i}"
+        nik_istri = data.get(key_nik_istri, "")
+    
+        if nik_istri:
+            nik_istri_list.append(nik_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    while True:
+        key_nik_anak = f"nikAnak{i}"
+        nik_anak = data.get(key_nik_anak, "")
+    
+        if nik_anak:
+            nik_anak_list.append(nik_anak)
+            i += 1
+        else:
+            break
+
+    nik_data = {
+        "nikFather": data.get("nik", ""),
+        "nikMother": nik_istri_list,
+        "nikAnak": nik_anak_list
+    }
+
+    if any(nik_data.values()):
+        relevant_data["nik"].append(nik_data)
+
+    address_istri_list = []
+    address_anak_list = []
+    i = 1
+
+# Mengumpulkan nama istri dari data
+    while True:
+        key_address_istri = f"alamatIstri{i}"
+        address_istri = data.get(key_address_istri, "")
+    
+        if address_istri:
+            address_istri_list.append(address_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    while True:
+        key_address_anak = f"alamatAnak{i}"
+        address_anak = data.get(key_address_anak, "")
+    
+        if address_anak:
+            address_anak_list.append(address_anak)
+            i += 1
+        else:
+            break
+
+    address_data = {
+        "addressFather": data.get("address", ""),
+        "addressMother": address_istri_list,
+        "addressAnak": address_anak_list
+    }
+
+    if any(address_data.values()):
+        relevant_data["address"].append(address_data)
+
+    ktp_istri_list = []
+    ktp_anak_list = []
+    i = 1
+
+# Mengumpulkan nama istri dari data
+    while True:
+        key_ktp_istri = f"ktpIstri{i}"
+        ktp_istri = data.get(key_ktp_istri, "")
+    
+        if ktp_istri:
+            ktp_istri_list.append(ktp_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    while True:
+        key_ktp_anak = f"ktpAnak{i}"
+        ktp_anak = data.get(key_ktp_anak, "")
+    
+        if ktp_anak:
+            ktp_anak_list.append(ktp_anak)
+            i += 1
+        else:
+            break
+
+    ktp_data = {
+        "ktpFather": data.get("fotoKTP", ""),
+        "ktpMother": ktp_istri_list,
+        "ktpAnak": ktp_anak_list
+    }
+
+    if any(ktp_data.values()):
+        relevant_data["KTP"].append(ktp_data)
+
 
     with open('Warga.txt', 'a') as file:
-        json_data = json.dumps(clean_data, default=str, ensure_ascii=False)
-        file.write(json_data + '\n')
+        json_data = json.dumps(relevant_data, default=str, ensure_ascii=False, indent=2)
+        file.write(json_data + '\n\n---\n\n')
 
 @app.route('/save_data', methods=['POST'])
 def save_data():
@@ -54,14 +223,14 @@ def save_data():
 
         ensure_upload_folder()
 
-        if 'image' in request.files:
-            image_file = request.files['image']
-            if image_file.filename != '':
-                image_extension = os.path.splitext(image_file.filename)[1]
-                image_filename = f"{data['name']}_photo{image_extension}"
-                image_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image_filename))
-                image_file.save(image_path)
-                data['image'] = image_path
+        for file_key in request.files:
+            file = request.files[file_key]
+            if file:
+                # Menyimpan file dengan nama yang sesuai
+                file_extension = file.filename.rsplit('.', 1)[1].lower()
+                file_path = f"uploads/{data['name']}_{file_key}.{file_extension}"
+                file.save(file_path)
+                data[file_key] = file_path
 
         # Terima data dari form
         name = request.form['name']
@@ -80,29 +249,14 @@ def save_data():
             return jsonify({"error": "NIK harus berupa 16 digit angka"}), 400
 
 
-        if 'image' in request.files:
-            image = request.files['image']
-            if image.filename != '':
-                filename = secure_filename(image.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                image.save(filepath)
-        else:
-            filename = None
-
-        print("Name:", name)
-        print("NIK:", nik)
-        print("Address:", address)
-        print("TTL:", ttl)
-        print("State:", state)
-        print("Zip Code:", zip_code)
-        print("Country:", country)
-        if filename:
-            print("Image Filename:", filename)
-
-
+        # Menyimpan data ke file.txt
         save_to_file(data)
 
-        return jsonify({"message": "Data saved successfully"})
+        # Tambahkan header CORS ke respons
+        response = jsonify({"message": "Data saved successfully"})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')  # Ganti dengan domain yang benar
+        return response
+    
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
@@ -115,11 +269,16 @@ def get_saved_data():
         search_query = request.args.get('search', '').lower()
 
         with open('Warga.txt', 'r') as file:
-            saved_data = [json.loads(line.strip()) for line in file]
+            json_data_list = file.read().split('\n\n---\n\n')
+            saved_data = []
+
+            for json_data_str in json_data_list:
+                if json_data_str.strip():
+                    saved_data.append(json.loads(json_data_str))
 
         # Filter data berdasarkan kriteria pencarian (nama)
         filtered_data = [data for data in saved_data if isinstance(data.get('name'), str) and search_query in data.get('name', '').lower()]
-
+        formatted_json = json.dumps(saved_data, indent=2)
 
         # Tambahkan URL foto ke setiap data yang diambil
         for data in filtered_data:
@@ -130,7 +289,7 @@ def get_saved_data():
             if data['name'] in saved_file_data:
                 data['fileName'] = saved_file_data[data['name']]['fileName']
 
-        return jsonify({'savedData': filtered_data})
+        return Response(response=formatted_json, status=200, mimetype='application/json')
     except Exception as e:
         return handle_error(e)
 

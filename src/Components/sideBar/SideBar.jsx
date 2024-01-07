@@ -7,11 +7,11 @@ import { Button } from '@mui/material';
 
 const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
   return (
-    <Sidebar collapsed={!isOpen} style={{ width: 400 }}>
+    <Sidebar collapsed={!isOpen} style={{ width: '75vh' }}>
       {selectedMarkerData && (
         <div className='container' style={{ padding: 0, height: '100vh', position: 'relative' }}>
           <button onClick={onClose} style={{
-            marginLeft: '360px',
+            right: 10,
             marginTop: '5px',
             position: 'absolute',
             backgroundColor: 'white',
@@ -26,20 +26,13 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
           <img
             src={selectedMarkerData.image_url}
             alt={selectedMarkerData.name}
-            style={{
-              paddingBottom: '5px',
-              paddingTop: '0px',
-              maxWidth: '400px',
-              Height: '150px',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
+            style={{ display: 'block', margin: '0 auto', height: '300px' }}
           />
           <div className='header1'>
-          {selectedMarkerData.name}
+            {selectedMarkerData.name}
           </div>
           <div className='alamat'>
-          <MapPin className='pin'/>{selectedMarkerData.address}
+            <MapPin className='pin'/>{selectedMarkerData.address}
           </div>
           <hr/>
           <div className='detail-container'>
@@ -56,7 +49,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
             </div>
             <hr className='container-line'/>
           </div>
-          <Button className='delete' variant="outlined" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
+          <Button style={{ width: 'calc(100% - 20px)', margin: '10px', textAlign: 'center' }} className='delete' variant="outlined" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>
       )}
     </Sidebar>
