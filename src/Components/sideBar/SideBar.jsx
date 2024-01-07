@@ -40,15 +40,100 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
             <span className='see-all'>See all</span> 
           </div>
           <div className='container-isi'>
-          <div className='row1'>
+            <div className='row1'>
               <span className='nama'>Nama</span>
             </div>
             <div className='row2'>
               <span className='warga-name'>{selectedMarkerData.name}</span>
-              <span className='see-more'>See more</span>
+            </div>
+              <hr className='container-line'/>
+          </div>
+
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Nama Istri</span>
+            </div>
+            <div>
+              {selectedMarkerData.istri ? (
+                selectedMarkerData.istri.map((istriName, index) => (
+                  <div key={index} className='warga-name-container'>
+                    <span className='warga-name'>{istriName}</span>
+                  </div>
+                ))
+              ) : (
+                <span className='warga-name'>Belum ada data istri</span>
+              )}
+              
             </div>
             <hr className='container-line'/>
           </div>
+
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Riwayat Surat</span>
+            </div>
+            <div>
+              {surat && surat[selectedMarkerData.name] && surat[selectedMarkerData.name].fileNames.length > 0 ? (
+                surat[selectedMarkerData.name].fileNames.map((fileName, index) => (
+                  <div key={index} className='warga-name-container'>
+                    <span className='warga-name'>{fileName}</span>
+                  </div>
+                ))
+              ) : (
+                <span className='warga-name'>Belum ada data surat</span>
+              )}
+     
+            </div>
+            <hr className='container-line'/>
+          </div>
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Foto KK</span>
+            </div>
+            <div>
+              {Array.isArray(selectedMarkerData.image_url_KK) ? (
+                selectedMarkerData.image_url_KK.map((image_url, index) => (
+                  <div key={index} className='warga-name-container'>
+                    <img
+                      src={image_url}
+                      alt={`KK ${index + 1}`}
+                      style={{ display: 'block', margin: '0 auto', height: '300px', marginTop: 10 }}
+                    />
+                  </div>
+                ))
+              ) : (
+                <span className='warga-name'>Belum ada foto KK</span>
+              )}
+            </div>
+            <hr className='container-line' />
+          </div>
+
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Foto KTP</span>
+            </div>
+            <div>
+              {Array.isArray(selectedMarkerData.image_url_KTP) ? (
+                selectedMarkerData.image_url_KTP.map((image_url, index) => (
+                  <div key={index} className='warga-name-container'>
+                    <img
+                      src={image_url}
+                      alt={`KTP ${index + 1}`}
+                      style={{ display: 'block', margin: '0 auto', height: '300px', marginTop: 10}}
+                    />
+                  </div>
+                ))
+              ) : (
+                <span className='warga-name'>Belum ada foto KTP</span>
+              )}
+            </div>
+            <hr className='container-line' />
+          </div>
+
+
+          
+
+          
           <Button style={{ width: 'calc(100% - 20px)', margin: '10px', textAlign: 'center' }} className='delete' variant="outlined" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>
       )}
