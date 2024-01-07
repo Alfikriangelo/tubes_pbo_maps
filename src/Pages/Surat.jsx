@@ -161,6 +161,9 @@ const Surat = () => {
                 value={nomorSurat}
                 onChange={(e) => setNomorSurat(e.target.value)}
               />
+              <label htmlFor='namaWarga' className='mb-2 mt-2'>
+                Nama Warga
+              </label>
               <Autocomplete
                 disablePortal
                 id='combo-box-demo'

@@ -112,11 +112,16 @@ def save_data():
 @app.route('/get_saved_data', methods=['GET'])
 def get_saved_data():
     try:
+        search_query = request.args.get('search', '').lower()
+
         with open('Warga.txt', 'r') as file:
             saved_data = [json.loads(line.strip()) for line in file]
 
+        # Filter data berdasarkan kriteria pencarian (nama)
+        filtered_data = [data for data in saved_data if search_query in data.get('name', '').lower()]
+
         # Tambahkan URL foto ke setiap data yang diambil
-        for data in saved_data:
+        for data in filtered_data:
             if 'image' in data:
                 data['image_url'] = f'http://127.0.0.1:5000/get_photo/{os.path.basename(data["image"])}'
 
@@ -124,9 +129,10 @@ def get_saved_data():
             if data['name'] in saved_file_data:
                 data['fileName'] = saved_file_data[data['name']]['fileName']
 
-        return jsonify({'savedData': saved_data})
+        return jsonify({'savedData': filtered_data})
     except Exception as e:
         return handle_error(e)
+
 
     
 @app.route('/delete_data/<name>', methods=['DELETE'])

@@ -56,7 +56,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
             </div>
             <hr className='container-line'/>
           </div>
-          <Button className='delete' variant="outlined" color='error' onClick={() => hapus(selectedMarkerData.name)}>Hapus</Button>
+          <Button className='delete' variant="outlined" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>
       )}
     </Sidebar>

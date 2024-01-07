@@ -84,13 +84,20 @@ const Maps = () => {
   const handleDelete = async (name) => {
     try {
       await axios.delete(`http://127.0.0.1:5000/delete_data/${name}`);
-      // Refresh data setelah penghapusan
+  
+      // Update data after deletion
       const responseData = await axios.get("http://127.0.0.1:5000/get_saved_data");
       setData(responseData.data.savedData);
+  
+      // Update searchResults if the deleted item is present
+      setSearchResults((prevResults) =>
+        prevResults.filter((item) => item.name !== name)
+      );
     } catch (error) {
       console.error("Error deleting data:", error);
     }
   };
+  
 
   useEffect(() => {
     const getSavedFileName = async () => {
