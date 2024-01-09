@@ -3,9 +3,30 @@ import { Sidebar } from 'react-pro-sidebar';
 import { X, MapPin } from 'lucide-react';
 import './SideBar.css'
 import { Button } from '@mui/material';
+import FormPopup from '../../Pages/Popup';
+import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 
 const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
+  const [isFormPopupOpen, setFormPopupOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    Modal.setAppElement('#root'); 
+  }, []);
+
+
+  const handleTambahAnakClick = () => {
+    const isAuthenticated = true; 
+
+    if (isAuthenticated) {
+      navigate('/tambah-anak');
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <Sidebar collapsed={!isOpen} style={{ width: '55vh' }}>
       {selectedMarkerData && (
@@ -125,10 +146,20 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
             </div>
             <hr className='container-line' />
           </div>
-          <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform:'none' }} className='update' variant="outlined" color='primary' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Tambah Anak</Button>
+          <Button
+            style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform: 'none' }}
+            className='update'
+            variant="outlined"
+            color='primary'
+            onClick={handleTambahAnakClick}
+          >
+            Tambah Anak
+          </Button>
+
           <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform:'none' }} className='delete' variant="contained" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>
       )}
+
     </Sidebar>
   );
 };
