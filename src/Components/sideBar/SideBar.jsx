@@ -1,61 +1,11 @@
-import {React, useState, useEffect} from 'react';
+import React from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 import { X, MapPin } from 'lucide-react';
 import './SideBar.css'
 import { Button } from '@mui/material';
-import FormPopup from '../../Pages/Popup';
-import Modal from 'react-modal';
-
 
 
 const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
-  const [isFormPopupOpen, setFormPopupOpen] = useState(false);
-
-  useEffect(() => {
-    Modal.setAppElement('#root'); // Ganti '#root' dengan id atau selector elemen utama aplikasi Anda
-  }, []);
-
-  const handleTambahAnakClick = (event) => {
-    // Mencegah event default agar tidak menghapus data
-    event.preventDefault();
-
-    // Membuka popup
-    setFormPopupOpen(true);
-  };
-  const handleTambahAnak = async (dataAnak) => {
-    // Menangani data anak yang dikirim dari formulir
-    const updatedData = {
-      ...selectedMarkerData,
-      anak: [
-        ...(selectedMarkerData.anak || []),
-        {
-          name: dataAnak.anakName,
-          nik: dataAnak.anakNIK,
-          tanggalLahir: dataAnak.tanggalLahir,
-        },
-      ],
-    };
-    try {
-      const response = await fetch('URL_BACKEND', {
-        method: 'PUT', // Atau metode HTTP sesuai kebutuhan (POST, PATCH, dsb.)
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
-
-      if (response.ok) {
-        console.log('Data anak berhasil disimpan.');
-      } else {
-        console.error('Gagal menyimpan data anak.');
-      }
-    } catch (error) {
-      console.error('Terjadi kesalahan:', error);
-    }
-
-    // Menutup popup setelah submit
-    setFormPopupOpen(false);
-  };
   return (
     <Sidebar collapsed={!isOpen} style={{ width: '55vh' }}>
       {selectedMarkerData && (
@@ -175,23 +125,10 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
             </div>
             <hr className='container-line' />
           </div>
-          <Button
-            style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform: 'none' }}
-            className='update'
-            variant="outlined"
-            color='primary'
-            onClick={handleTambahAnakClick}
-          >
-            Tambah Anak
-          </Button>
+          <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform:'none' }} className='update' variant="outlined" color='primary' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Tambah Anak</Button>
           <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform:'none' }} className='delete' variant="contained" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>
       )}
-      <FormPopup
-        isOpen={isFormPopupOpen}
-        onClose={() => setFormPopupOpen(false)}
-        onSubmit={handleTambahAnak}
-      />
     </Sidebar>
   );
 };
