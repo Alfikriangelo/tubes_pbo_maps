@@ -131,12 +131,19 @@ body {
 }
 
 .container-line {
-  width: 350px;
+  width: 450px;
   margin-top: 8px;
   border-top: 1px solid #BDBDBD;
 }
 
 .delete {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  align-content: center;
+}
+.update {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

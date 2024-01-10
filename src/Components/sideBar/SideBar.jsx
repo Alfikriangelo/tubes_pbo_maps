@@ -1,13 +1,34 @@
-import React from 'react';
+import {React, useState, useEffect} from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 import { X, MapPin } from 'lucide-react';
 import './SideBar.css'
 import { Button } from '@mui/material';
+import FormPopup from '../../Pages/Popup';
+import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 
-const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
+const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
+  const [isFormPopupOpen, setFormPopupOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    Modal.setAppElement('#root'); 
+  }, []);
+
+
+  const handleTambahAnakClick = () => {
+    const isAuthenticated = true; 
+
+    if (isAuthenticated) {
+      navigate('/tambah-anak');
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
-    <Sidebar collapsed={!isOpen} style={{ width: '75vh' }}>
+    <Sidebar collapsed={!isOpen} style={{ width: '55vh' }}>
       {selectedMarkerData && (
         <div className='container' style={{ padding: 0, height: '100vh', position: 'relative' }}>
           <button onClick={onClose} style={{
@@ -20,9 +41,6 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
             padding:'3px'
           }}><X />
           </button>
-          {/* <h1>
-            INFORMASI WARGA
-          </h1> */}
           <img
             src={selectedMarkerData.image_url}
             alt={selectedMarkerData.name}
@@ -37,7 +55,6 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
           <hr/>
           <div className='detail-container'>
             <span className='detail'>Details</span> 
-            <span className='see-all'>See all</span> 
           </div>
           <div className='container-isi'>
             <div className='row1'>
@@ -129,14 +146,20 @@ const SideBar = ({ isOpen, selectedMarkerData, surat,onClose, hapus }) => {
             </div>
             <hr className='container-line' />
           </div>
+          <Button
+            style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform: 'none' }}
+            className='update'
+            variant="outlined"
+            color='primary'
+            onClick={handleTambahAnakClick}
+          >
+            Tambah Anak
+          </Button>
 
-
-          
-
-          
-          <Button style={{ width: 'calc(100% - 20px)', margin: '10px', textAlign: 'center' }} className='delete' variant="outlined" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
+          <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform:'none' }} className='delete' variant="contained" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>
       )}
+
     </Sidebar>
   );
 };
