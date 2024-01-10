@@ -1,21 +1,14 @@
-import React from 'react';
+import {React, useState, useEffect} from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 import { X, MapPin } from 'lucide-react';
 import './SideBar.css'
 import { Button } from '@mui/material';
-import FormPopup from '../../Pages/Popup';
-import Modal from 'react-modal';
+
 import { useNavigate } from 'react-router-dom';
 
 
 const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
-  const [isFormPopupOpen, setFormPopupOpen] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    Modal.setAppElement('#root'); 
-  }, []);
-
 
   const handleTambahAnakClick = () => {
     const isAuthenticated = true; 

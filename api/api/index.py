@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
 import json
-import os
+import requests
 
 app = Flask(__name__) 
 CORS(app)
@@ -14,7 +14,7 @@ saved_file_data = {}
 # link fikri 'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
 # link darell 'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
 
-UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
+UPLOAD_FOLDER = r'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -106,8 +106,6 @@ def save_data():
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
-    
-
 
 @app.route('/get_saved_data', methods=['GET'])
 def get_saved_data():
@@ -135,7 +133,32 @@ def get_saved_data():
         return handle_error(e)
 
 
-    
+def get_saved_data():
+    try:
+        response = requests.get('http://127.0.0.1:5000/get_saved_data')
+        response.raise_for_status()  # Lebih baik menangkap kesalahan jika terjadi
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f'Error fetching data: {e}')
+        return {}
+
+# Inisialisasi data dari endpoint get_saved_data
+saved_data = get_saved_data()
+
+@app.route('/update_data', methods=['POST'])
+def update_data():
+    try:
+        # Ambil data yang dikirim dari frontend
+        data_from_frontend = request.json
+
+        # Lakukan pembaruan data sesuai kebutuhan
+        # Misalnya, kita akan menambahkan anak baru ke dalam array 'anak'
+        saved_data['savedData'][0]['anak'].append(data_from_frontend['anak'])
+
+        return jsonify({'message': 'Data berhasil diperbarui di backend'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
 @app.route('/delete_data/<name>', methods=['DELETE'])
 def delete_data(name):
     try:
