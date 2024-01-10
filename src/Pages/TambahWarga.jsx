@@ -186,6 +186,14 @@ export default function TambahWarga({
                 <Typography variant="h5" textAlign={"center"} sx={{ my: 4 }}>
                   Pendaftaran Anda Berhasil!
                 </Typography>
+                <Button
+                  sx={{ mt: 3, mx: "auto", display: "block" }}
+                  variant="outlined"
+                  onClick={() => navigate("/maps")}
+                  style={{ textTransform: "none" }}
+                >
+                  Kembali
+                </Button>
               </React.Fragment>
             ) : (
               <React.Fragment>
