@@ -30,16 +30,34 @@ function TambahAnak() {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const formDataToSend = new FormData();
+  
+    // Menambahkan data anak ke formDataToSend
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== '') {
+        formDataToSend.append(key, value);
+      }
+    });
+  
+    // Kirim data ke backend
     try {
-      // Kirim data ke backend
-      const response = await axios.post('http://127.0.0.1:5000/update_data', formData);
-
-      if (response.data.message) {
-        console.log(response.data.message);
-        // Lakukan sesuatu setelah sukses
+      const response = await fetch('http://localhost:5000/save_data', {
+        method: 'PUT',  // Ganti metode HTTP menjadi PUT
+        headers: {
+          // Jika perlu menambahkan header tertentu, tambahkan di sini
+        },
+        body: formDataToSend,
+      });
+  
+      if (response.ok) {
+        console.log('Data saved successfully');
+        // Handle kesuksesan, misalnya redirect atau tindakan lainnya
       } else {
-        console.error('Gagal memperbarui data di backend.');
+        console.error('Failed to save data');
+        // Handle kegagalan, misalnya menampilkan pesan kesalahan kepada pengguna
       }
     } catch (error) {
       console.error('Terjadi kesalahan:', error);

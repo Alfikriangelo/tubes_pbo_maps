@@ -318,28 +318,30 @@ def get_saved_data():
     except Exception as e:
         return handle_error(e)
 
-
-def get_saved_data():
-    try:
-        response = requests.get('http://127.0.0.1:5000/get_saved_data')
-        response.raise_for_status()  # Lebih baik menangkap kesalahan jika terjadi
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f'Error fetching data: {e}')
-        return {}
-
 # Inisialisasi data dari endpoint get_saved_data
 saved_data = get_saved_data()
 
-@app.route('/update_data', methods=['POST'])
-def update_data():
+def save_file(data_keluarga):
+    try:
+        with open('Warga.txt', 'a') as file:
+            # Ubah data menjadi format JSON dan tulis ke file
+            json_data = json.dumps(data_keluarga, default=str, ensure_ascii=False)
+            file.write(json_data + "\n")  # Tambahkan karakter newline untuk setiap data
+    except Exception as e:
+        print(f'Error saving to file: {e}')
+
+@app.route('/save_data', methods=['PUT'])
+def save_data_append():
     try:
         # Ambil data yang dikirim dari frontend
-        data_from_frontend = request.json
+        data_from_frontend = request.form.to_dict()
 
         # Lakukan pembaruan data sesuai kebutuhan
         # Misalnya, kita akan menambahkan anak baru ke dalam array 'anak'
         saved_data['savedData'][0]['anak'].append(data_from_frontend['anak'])
+
+        # Simpan data yang diperbarui ke file
+        save_file(saved_data['savedData'][0])
 
         return jsonify({'message': 'Data berhasil diperbarui di backend'})
     except Exception as e:
