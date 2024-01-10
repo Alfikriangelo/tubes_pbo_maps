@@ -38,71 +38,257 @@ def ensure_upload_folder():
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def handle_uploaded_file(file, data, key):
+    if file:
+        file_extension = file.filename.rsplit('.', 1)[1].lower()
+        file_filename = f"{data['name']}_{key}.{file_extension}"
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file_filename)).replace("\\", "/")
+        file_url = f'http://127.0.0.1:5000/get_photo/uploads{os.path.basename(file_path)}'
+        file.save(file_path)
+        data[key] = file_path
+
+    return file_url
+
 def save_to_file(data):
-    clean_data = {key: value.replace('\\', '') if isinstance(value, str) else value for key, value in data.items()}
+    kk = data.get("fotoKK", "")
+    full_path_kk = os.path.join(UPLOAD_FOLDER, kk).replace("\\", "/")
+    home = data.get("fotoHome", "")
+    full_path_home = os.path.join(UPLOAD_FOLDER, home).replace("\\", "/")
+    home2 = data.get("fotoHome2", "")
+    full_path_home2 = os.path.join(UPLOAD_FOLDER, home2).replace("\\", "/")
+    diri = data.get("fotoDiri", "")
+    full_path_diri = os.path.join(UPLOAD_FOLDER, diri).replace("\\", "/")
+    data_keluarga = {
+        "name": data.get("name", ""),
+        "ttl": data.get("ttl", ""),
+        "job": data.get("job", ""),
+        "blok": data.get("blok", ""),
+        "no": data.get("no", ""),
+        "lastEdu": data.get("lastEdu", ""),
+        "platNomor": [],
+        "comment": [],
+        "coordinates": data.get("coordinates", ""),
+        "fotoKK": full_path_kk,
+        "fotoHome": full_path_home,
+        "fotoHome2": full_path_home2,
+        "fotoDiri": full_path_diri,
+        "istri": [],
+        "anak": [],
+        "statusAnak": [],
+        "address": [],
+        "nik": [],
+        "fotoKTP": [],
+        "image_url_KK": data.get("image_url_KK", []),
+        "image_url_KTP": data.get("image_url_KTP", []),
+        "image_url_Home": data.get("image_url_Home", []),
+        "image_url_Home2": data.get("image_url_Home2", []),
+        "image_url_Diri": data.get("image_url_Diri", []),
+    }
+
+    data_keluarga["nik"].append(data.get("nik", ""))
+    data_keluarga["address"].append(data.get("address", ""))
+    ktp = data.get("fotoKTP", "")
+    full_path_ktp = os.path.join(UPLOAD_FOLDER, ktp).replace("\\", "/")
+    data_keluarga['fotoKTP'].append(full_path_ktp)
+
+    i = 1
+
+    # Mengumpulkan nama istri dari data
+    while True:
+        key_nama_istri = f"namaIstri{i}"
+        nama_istri = data.get(key_nama_istri, "")
+    
+        if nama_istri:
+            data_keluarga["istri"].append(nama_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    while True:
+        key_nama_anak = f"namaAnak{i}"
+        nama_anak = data.get(key_nama_anak, "")
+
+        if nama_anak:
+            data_keluarga["anak"].append(nama_anak)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    while True:
+        key_status_anak = f"statusAnak{i}"
+        status_anak = data.get(key_status_anak, "")
+    
+        if status_anak:
+            data_keluarga["statusAnak"].append(status_anak)
+            i += 1
+        else:
+            break
+
+    
+    i = 0
+
+    while True:
+        key_nomor_plat = f"vehicleNumber{i}"
+        nomor_plat = data.get(key_nomor_plat, "")
+    
+        if nomor_plat:
+            data_keluarga["platNomor"].append(nomor_plat)
+            i += 1
+        else:
+            break       
+
+    i = 0
+
+    while True:
+        key_komen = f"additionalComment{i}"
+        add_komen = data.get(key_komen, "")
+    
+        if add_komen:
+            data_keluarga["comment"].append(add_komen)
+            i += 1
+        else:
+            break   
+
+    i = 1
+
+    # Mengumpulkan nik istri dari data
+    while True:
+        key_nik_istri = f"nikIstri{i}"
+        nik_istri = data.get(key_nik_istri, "")
+    
+        if nik_istri:
+            data_keluarga["nik"].append(nik_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    # Mengumpulkan nik anak dari data
+    while True:
+        key_nik_anak = f"nikAnak{i}"
+        nik_anak = data.get(key_nik_anak, "")
+    
+        if nik_anak:
+            data_keluarga["nik"].append(nik_anak)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    # Mengumpulkan alamat istri dari data
+    while True:
+        key_address_istri = f"alamatIstri{i}"
+        address_istri = data.get(key_address_istri, "")
+    
+        if address_istri:
+            data_keluarga["address"].append(address_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    # Mengumpulkan alamat anak dari data
+    while True:
+        key_address_anak = f"alamatAnak{i}"
+        address_anak = data.get(key_address_anak, "")
+    
+        if address_anak:
+            data_keluarga["address"].append(address_anak)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    # Mengumpulkan foto KTP istri dari data
+    while True:
+        key_ktp_istri = f"ktpIstri{i}"
+        ktp_istri = data.get(key_ktp_istri, "")
+    
+        if ktp_istri:
+            full_path_ktp_istri = os.path.join(UPLOAD_FOLDER, ktp_istri).replace("\\", "/")
+            data_keluarga['fotoKTP'].append(full_path_ktp_istri)
+            i += 1
+        else:
+            break
+
+    i = 1
+
+    # Mengumpulkan foto KTP anak dari data
+    while True:
+        key_ktp_anak = f"ktpAnak{i}"
+        ktp_anak = data.get(key_ktp_anak, "")
+    
+        if ktp_anak:
+            full_path_ktp_anak = os.path.join(UPLOAD_FOLDER, ktp_anak).replace("\\", "/")
+            data_keluarga['fotoKTP'].append(full_path_ktp_anak)
+            i += 1
+        else:
+            break
 
     with open('Warga.txt', 'a') as file:
-        json_data = json.dumps(clean_data, default=str, ensure_ascii=False)
-        file.write(json_data + '\n')
+        json_data = json.dumps(data_keluarga, default=str, ensure_ascii=False)
+        file.write(json_data + "\n")
 
+# Endpoint untuk menyimpan data
 @app.route('/save_data', methods=['POST'])
 def save_data():
     try:
         data = request.form.to_dict()
-
+        print("Received Data:", data)
+        # Mengonversi koordinat dari JSON string ke objek Python
         data['coordinates'] = json.loads(data['coordinates'])
 
-        ensure_upload_folder()
+        image_kk_urls = []
+        image_ktp_urls = []
+        image_home_urls = []
+        image_home2_urls = []
+        image_diri_urls = []
 
-        if 'image' in request.files:
-            image_file = request.files['image']
-            if image_file.filename != '':
-                image_extension = os.path.splitext(image_file.filename)[1]
-                image_filename = f"{data['name']}_photo{image_extension}"
-                image_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image_filename))
-                image_file.save(image_path)
-                data['image'] = image_path
+        # Menghandle file-file yang diupload
+        for file_key in request.files:
+            file = request.files[file_key]
+            if file:
+                # Menyimpan file dengan nama yang sesuai
+                file_url = handle_uploaded_file(file, data, file_key)
 
-        # Terima data dari form
-        name = request.form['name']
-        nik = request.form['nik']
-        address = request.form['address']
-        ttl = request.form['ttl']
-        state = request.form['state']
-        zip_code = request.form['zip']
-        country = request.form['country']
+                if file_key.startswith("fotoKK"):
+                    image_kk_urls.append(file_url)
+                elif file_key.startswith("fotoKTP"):
+                    image_ktp_urls.append(file_url)
+                elif file_key == "fotoHome":
+                    image_home_urls.append(file_url)
+                elif file_key == "fotoHome2":
+                    image_home2_urls.append(file_url)
+                elif file_key == "fotoDiri":
+                    image_diri_urls.append(file_url)
 
-        # Validasi data
-        if not name or not nik or not ttl or not state or not country:
-            return jsonify({"error": "Semua kolom wajib diisi"}), 400
+        # Menambahkan URL ke data yang akan disimpan
+        data['image_url_KK'] = image_kk_urls
+        data['image_url_KTP'] = image_ktp_urls
+        data['image_url_Home'] = image_home_urls
+        data['image_url_Home2'] = image_home2_urls
+        data['image_url_Diri'] = image_diri_urls
 
-        if not nik.isdigit() or len(nik) != 16:
-            return jsonify({"error": "NIK harus berupa 16 digit angka"}), 400
+                
 
-
-        if 'image' in request.files:
-            image = request.files['image']
-            if image.filename != '':
-                filename = secure_filename(image.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                image.save(filepath)
-        else:
-            filename = None
-
-        print("Name:", name)
-        print("NIK:", nik)
-        print("Address:", address)
-        print("TTL:", ttl)
-        print("State:", state)
-        print("Zip Code:", zip_code)
-        print("Country:", country)
-        if filename:
-            print("Image Filename:", filename)
-
-
+        # Menyimpan data ke file.txt
         save_to_file(data)
 
-        return jsonify({"message": "Data saved successfully"})
+        # Tambahkan header CORS ke respons
+        response = jsonify({"message": "Data saved successfully"})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')  # Ganti dengan domain yang benar
+        return response
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
@@ -217,8 +403,6 @@ def save_file_name():
         return jsonify({"message": "File name saved successfully"})
     except Exception as e:
         return handle_error(e)
-
-
 
 
 @app.route('/get_saved_file_name', methods=['GET'])
