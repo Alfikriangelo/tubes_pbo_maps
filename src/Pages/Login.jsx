@@ -43,7 +43,7 @@ const Login = () => {
   };
 
   return (
-    <div className='container'>
+    <div className='container-login'>
       <div className='header'>
         <div className='text'>Login</div>
         <div className='underline'></div>
@@ -77,8 +77,8 @@ const Login = () => {
             width: '220px',
             height: '59px',
             color: '#fff',
-            background: '#4c00b4',
-            borderRadius: '50px',
+            background: '#3874cb',
+            borderRadius: '15px',
             fontSize: '19px',
             fontWeight: '700',
             cursor: 'pointer',

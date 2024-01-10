@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import "leaflet/dist/leaflet.css";
+
 // import "./tombolTambahWarga.css";
 import Button from '@mui/material/Button';
 
