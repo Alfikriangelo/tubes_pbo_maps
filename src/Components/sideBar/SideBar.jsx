@@ -49,6 +49,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
           <div className='detail-container'>
             <span className='detail'>Details</span>
           </div>
+
           <div className='container-isi'>
             <div className='row1'>
               <span className='nama'>Kepala Keluarga</span>
@@ -59,7 +60,9 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
               <span className='pekerjaan'>Pekerjaan: {selectedMarkerData.job}</span>
               <span className='ttl'>Tempat Tanggal Lahir: {selectedMarkerData.ttl}</span>
               <span className='last-edu'>Pendidikan Terakhir: {selectedMarkerData.lastEdu}</span>
-
+              <a className='see-photo' href={selectedMarkerData.image_url_Diri} target='_blank'>
+      Lihat Foto Diri
+    </a>
             </div>
             <hr className='container-line' />
           </div>
@@ -134,8 +137,8 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
               <span className='nama'>Informasi Keluarga</span>
             </div>
             <div className='row2-keluarga'>
-              <span className='warga-name'>Nomor PBB: {selectedMarkerData.name}</span>
-              <span className='nik'>Nomor BPJS: {selectedMarkerData.nik[0]}</span>
+              <span className='warga-name'>No. PBB: {selectedMarkerData.pbb}</span>
+              <span className='nik'>No. BPJS: {selectedMarkerData.bpjs}</span>
             </div>
             <hr className='container-line' />
           </div>
@@ -197,8 +200,27 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
                   );
                 })
               ) : (
-                <span className='warga-name'>Belum ada data anak</span>
+                <span className='warga-name'>Belum ada data keterangan</span>
               )}
+            </div>
+            <hr className='container-line' />
+          </div>
+          
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Foto Rumah</span>
+            </div>
+            <div className='row2-keluarga'>
+              <span className='warga-name'>Tampak Depan: <img
+                      src={selectedMarkerData.image_url_Home}
+                      alt={`Tampak Depan`}
+                      style={{ display: 'block', margin: '0 auto', height: '300px', marginTop: 10 }}
+                    /></span>
+              <span className='nik'>Tampak Samping: <img
+                      src={selectedMarkerData.image_url_Home2}
+                      alt={`Tampak Samping`}
+                      style={{ display: 'block', margin: '0 auto', height: '300px', marginTop: 10 }}
+                    /></span>
             </div>
             <hr className='container-line' />
           </div>
@@ -246,7 +268,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
             </div>
             <hr className='container-line' />
           </div>
-          <Button
+          {/* <Button
             style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform: 'none' }}
             className='update'
             variant="outlined"
@@ -254,7 +276,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
             onClick={handleTambahAnakClick}
           >
             Tambah Anak
-          </Button>
+          </Button> */}
 
           <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform: 'none' }} className='delete' variant="contained" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>

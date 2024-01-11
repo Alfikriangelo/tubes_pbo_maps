@@ -170,3 +170,8 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.see-photo{
+  font-size: small;
+  color: #1a73e8;
+}
