@@ -47,28 +47,28 @@ const Surat = () => {
   const handleDownload = () => {
     const content = componentRef.current;
     const pdfConfig = {
-        margin: 5,
-        padding: 10,
+      margin: 5,
+      padding: 10,
     };
 
     const fileName = `surat_${nomorSurat}_${selectedName}.pdf`;
 
     // Kirim file name dan "nama" ke backend
     fetch('http://127.0.0.1:5000/save_file_name', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nama: selectedName, fileName }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ nama: selectedName, fileName }),
     })
-        .then((response) => response.json())
-        .then((data) => {
-            // Setelah mengirim file name dan "nama" ke backend, generate dan unduh PDF
-            html2pdf().from(content).set(pdfConfig).save(fileName);
-        })
-        .catch((error) => {
-            console.error('Error sending file name and "nama" to the backend:', error);
-        });
+      .then((response) => response.json())
+      .then((data) => {
+        // Setelah mengirim file name dan "nama" ke backend, generate dan unduh PDF
+        html2pdf().from(content).set(pdfConfig).save(fileName);
+      })
+      .catch((error) => {
+        console.error('Error sending file name and "nama" to the backend:', error);
+      });
   };
 
 
@@ -90,10 +90,10 @@ const Surat = () => {
     setSelectedName(newValue);
     setSelectedData({
       ttl: selectedPerson?.ttl || '',
-      pekerjaan: selectedPerson?.pekerjaan || '',
-      pendidikanTerakhir: selectedPerson?.pendidikanTerakhir || '',
+      pekerjaan: selectedPerson?.job || '',
+      pendidikanTerakhir: selectedPerson?.lastEdu || '',
       blok: selectedPerson?.blok || '',
-      noRumah: selectedPerson?.noRumah || '',
+      noRumah: selectedPerson?.no || '',
       tanggal: selectedPerson?.tanggal || [dayjs(), dayjs()],
     });
   };
@@ -103,12 +103,17 @@ const Surat = () => {
       <main className='m-5 p-10 md:max-w-xl md:mx-auto lg:max-w-2xl xl:max-w-4xl bg-white rounded shadow'>
         {showInvoice ? (
           <>
+          <div className='button-top' style={{display: 'flex', flexDirection: 'row'}}>
+            <Button variant='outlined' onClick={() => navigate('/maps')} style={{ textTransform: 'none', marginRight: '630px' }}>
+              Kembali
+            </Button>
             <Button
               variant='outlined'
               onClick={handleDownload}
-              style={{ textTransform: 'none' }}>
+              style={{ textTransform: 'none'}}>
               Download
             </Button>
+            </div>
             <div ref={componentRef} className='p-5'>
               <Header handlePrint={handlePrint} />
               <Judul nomorSurat={nomorSurat} />
