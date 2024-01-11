@@ -8,6 +8,9 @@ function TambahAnak() {
     ttl: ''
   });
 
+  // State untuk menyimpan data yang diambil dari backend
+  const [savedData, setSavedData] = useState([]);
+
   useEffect(() => {
     // Ambil data awal dari backend saat komponen dimuat
     fetchData();
@@ -16,6 +19,7 @@ function TambahAnak() {
   const fetchData = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/get_saved_data');
+      setSavedData(response.data.savedData);  // Simpan seluruh data dari backend
       setFormData(response.data.savedData[0]);  // Ambil data pertama dari array savedData
     } catch (error) {
       console.error('Terjadi kesalahan:', error);
@@ -32,29 +36,23 @@ function TambahAnak() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const formDataToSend = new FormData();
-  
-    // Menambahkan data anak ke formDataToSend
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== '') {
-        formDataToSend.append(key, value);
-      }
-    });
-  
-    // Kirim data ke backend
+
+    // Kirim data ke backend dengan metode PUT
     try {
-      const response = await fetch('http://localhost:5000/save_data', {
-        method: 'PUT',  // Ganti metode HTTP menjadi PUT
+      const response = await fetch('http://localhost:5000/update_data', {
+        method: 'PUT',
         headers: {
-          // Jika perlu menambahkan header tertentu, tambahkan di sini
+          'Content-Type': 'application/json',
         },
-        body: formDataToSend,
+        body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         console.log('Data saved successfully');
         // Handle kesuksesan, misalnya redirect atau tindakan lainnya
+
+        // Optional: Refresh data setelah penyimpanan berhasil
+        fetchData();
       } else {
         console.error('Failed to save data');
         // Handle kegagalan, misalnya menampilkan pesan kesalahan kepada pengguna
@@ -66,7 +64,7 @@ function TambahAnak() {
 
   return (
     <div>
-      <h1>Form Update Data</h1>
+      <h1>Form Tambah Anak</h1>
       <label>
         Anak:
         <input type="text" name="anak" value={formData.anak} onChange={handleChange} />
@@ -82,7 +80,7 @@ function TambahAnak() {
         <input type="text" name="ttl" value={formData.ttl} onChange={handleChange} />
       </label>
       <br />
-      <button onClick={handleSubmit}>Update Backend</button>
+      <button onClick={handleSubmit}>Tambah Anak</button>
     </div>
   );
 }

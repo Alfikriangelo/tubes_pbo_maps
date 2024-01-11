@@ -1,194 +1,26 @@
-from flask import Flask, request, jsonify, send_from_directory
-from pymongo import MongoClient 
-from flask_cors import CORS
-from werkzeug.utils import secure_filename
-from datetime import datetime
-import os
-import json
-import os
+saved_data = get_saved_data()
 
-app = Flask(__name__) 
-CORS(app)
-saved_file_data = {}
+# # Endpoint untuk menyimpan data dari frontend
+# @app.route('/update_data', methods=['POST'])
+# def update_data():
+#     try:
+#         data = request.form.to_dict()
+#         print("Received Data:", data)
+        
+#         # ... (proses lainnya)
 
-# link fikri 'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
-# link darell 'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
+#         # Menyimpan data ke file.txt
+#         save_to_file(data)
 
-UPLOAD_FOLDER = r'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+#         # Tambahkan header CORS ke respons
+#         response = jsonify({"message": "Data saved successfully"})
+#         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')  # Ganti dengan domain yang benar
+        
+#         # Memperbarui saved_data setelah penyimpanan data
+#         global saved_data
+#         saved_data = get_saved_data()
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def handle_error(e):
-    return jsonify({'error': str(e)})
-
-@app.route('/') 
-def hello_world():  
-    return 'ye bisa'
-
-client = MongoClient("mongodb+srv://tes:tes@cluster1.tbcoubt.mongodb.net/?retryWrites=true&w=majority") 
-
-db = client['mydb'] 
-
-collection = db['pengguna'] 
-
-def ensure_upload_folder():
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-
-def save_to_file(data):
-    clean_data = {key: value.replace('\\', '') if isinstance(value, str) else value for key, value in data.items()}
-
-    with open('Warga.txt', 'a') as file:
-        json_data = json.dumps(clean_data, default=str, ensure_ascii=False)
-        file.write(json_data + '\n')
-
-@app.route('/save_data', methods=['POST'])
-def save_data():
-    try:
-        data = request.form.to_dict()
-
-        data['coordinates'] = json.loads(data['coordinates'])
-
-        ensure_upload_folder()
-
-        if 'image' in request.files:
-            image_file = request.files['image']
-            if image_file.filename != '':
-                image_extension = os.path.splitext(image_file.filename)[1]
-                image_filename = f"{data['name']}_photo{image_extension}"
-                image_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image_filename))
-                image_file.save(image_path)
-                data['image'] = image_path
-
-        # Terima data dari form
-        name = request.form['name']
-        nik = request.form['nik']
-        address = request.form['address']
-        ttl = request.form['ttl']
-        state = request.form['state']
-        zip_code = request.form['zip']
-        country = request.form['country']
-
-        # Validasi data
-        if not name or not nik or not ttl or not state or not country:
-            return jsonify({"error": "Semua kolom wajib diisi"}), 400
-
-        if not nik.isdigit() or len(nik) != 16:
-            return jsonify({"error": "NIK harus berupa 16 digit angka"}), 400
-
-
-        if 'image' in request.files:
-            image = request.files['image']
-            if image.filename != '':
-                filename = secure_filename(image.filename)
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                image.save(filepath)
-        else:
-            filename = None
-
-        print("Name:", name)
-        print("NIK:", nik)
-        print("Address:", address)
-        print("TTL:", ttl)
-        print("State:", state)
-        print("Zip Code:", zip_code)
-        print("Country:", country)
-        if filename:
-            print("Image Filename:", filename)
-
-
-        save_to_file(data)
-
-        return jsonify({"message": "Data saved successfully"})
-    except Exception as e:
-        print("Error:", str(e))
-        return jsonify({"error": str(e)}), 500
-    
-
-
-@app.route('/get_saved_data', methods=['GET'])
-def get_saved_data():
-    try:
-        search_query = request.args.get('search', '').lower()
-
-        with open('Warga.txt', 'r') as file:
-            saved_data = [json.loads(line.strip()) for line in file]
-
-        # Filter data berdasarkan kriteria pencarian (nama)
-        filtered_data = [data for data in saved_data if isinstance(data.get('name'), str) and search_query in data.get('name', '').lower()]
-
-
-        # Tambahkan URL foto ke setiap data yang diambil
-        for data in filtered_data:
-            if 'image' in data:
-                data['image_url'] = f'http://127.0.0.1:5000/get_photo/{os.path.basename(data["image"])}'
-
-            # Check if the name exists in the saved_file_data dictionary
-            if data['name'] in saved_file_data:
-                data['fileName'] = saved_file_data[data['name']]['fileName']
-
-        return jsonify({'savedData': filtered_data})
-    except Exception as e:
-        return handle_error(e)
-
-
-    
-@app.route('/delete_data/<name>', methods=['DELETE'])
-def delete_data(name):
-    try:
-        with open('Warga.txt', 'r') as file:
-            saved_data = [json.loads(line.strip()) for line in file]
-
-        updated_data = [data for data in saved_data if data.get('name') != name]
-
-        with open('Warga.txt', 'w') as file:
-            for data in updated_data:
-                json_data = json.dumps(data, default=str, ensure_ascii=False)
-                file.write(json_data + '\n')
-
-        return jsonify({"message": "Data deleted successfully"})
-    except Exception as e:
-        return handle_error(e)
-
-
-@app.route('/get_photo/uploads<filename>', methods=['GET'])
-def get_photo(filename):
-    try:
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-    except Exception as e:
-        return handle_error(e)
-    
-
-@app.route('/save_file_name', methods=['POST'])
-def save_file_name():
-    try:
-        data = request.get_json()
-        name = data.get('nama')
-        file_name = data.get('fileName')
-
-        # Baca data file Riwayat_surat.txt
-        with open('Riwayat_surat.txt', 'r') as history_file:
-            history_data = [json.loads(line.strip()) for line in history_file]
-
-        # Temukan entri yang sesuai dengan nama
-        entry_found = False
-        for entry in history_data:
-            if entry['nama'] == name:
-                entry_found = True
-                entry['fileNames'].append(file_name)
-                break
-
-        # Jika entri tidak ditemukan, tambahkan entri baru
-        if not entry_found:
-            history_data.append({'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'nama': name, 'fileNames': [file_name]})
-
-        # Tulis kembali data ke dalam file Riwayat_surat.txt
-        with open('Riwayat_surat.txt', 'w') as history_file:
-            for entry in history_data:
-                json_data = json.dumps(entry, default=str, ensure_ascii=False)
-                history_file.write(json_data + '\n')
-
-        retur
+#         return response
+#     except Exception as e:
+#         print("Error:", str(e))
+#         return jsonify({"error": str(e)}), 500

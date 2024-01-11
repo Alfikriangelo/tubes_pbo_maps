@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import { React, useState, useEffect } from 'react';
 import { Sidebar } from 'react-pro-sidebar';
 import { X, MapPin } from 'lucide-react';
 import './SideBar.css'
@@ -11,7 +11,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
   const navigate = useNavigate();
 
   const handleTambahAnakClick = () => {
-    const isAuthenticated = true; 
+    const isAuthenticated = true;
 
     if (isAuthenticated) {
       navigate('/tambah-anak');
@@ -30,12 +30,12 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
             position: 'absolute',
             backgroundColor: 'white',
             borderRadius: '36px',
-            display:'flex',
-            padding:'3px'
+            display: 'flex',
+            padding: '3px'
           }}><X />
           </button>
           <img
-            src={selectedMarkerData.image_url}
+            src={selectedMarkerData.image_url_Home}
             alt={selectedMarkerData.name}
             style={{ display: 'block', margin: '0 auto', height: '300px' }}
           />
@@ -43,39 +43,124 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
             {selectedMarkerData.name}
           </div>
           <div className='alamat'>
-            <MapPin className='pin'/>{selectedMarkerData.address}
+            <MapPin className='pin' />{selectedMarkerData.address[0]}
           </div>
-          <hr/>
+          <hr />
           <div className='detail-container'>
-            <span className='detail'>Details</span> 
+            <span className='detail'>Details</span>
           </div>
           <div className='container-isi'>
             <div className='row1'>
-              <span className='nama'>Nama</span>
+              <span className='nama'>Kepala Keluarga</span>
             </div>
-            <div className='row2'>
-              <span className='warga-name'>{selectedMarkerData.name}</span>
+            <div className='row2-kepala'>
+              <span className='warga-name'>Nama: {selectedMarkerData.name}</span>
+              <span className='nik'>NIK: {selectedMarkerData.nik[0]}</span>
+              <span className='pekerjaan'>Pekerjaan: {selectedMarkerData.job}</span>
+              <span className='ttl'>Tempat Tanggal Lahir: {selectedMarkerData.ttl}</span>
+              <span className='last-edu'>Pendidikan Terakhir: {selectedMarkerData.lastEdu}</span>
+
             </div>
-              <hr className='container-line'/>
+            <hr className='container-line' />
           </div>
 
           <div className='container-isi'>
             <div className='row1'>
-              <span className='nama'>Nama Istri</span>
+              <span className='nama'>Istri</span>
             </div>
             <div>
               {selectedMarkerData.istri ? (
-                selectedMarkerData.istri.map((istriName, index) => (
-                  <div key={index} className='warga-name-container'>
-                    <span className='warga-name'>{istriName}</span>
-                  </div>
-                ))
+                selectedMarkerData.istri.map((istriName, index) => {
+                  const startIdxIstri = 1; // Indeks mulai untuk NIK istri
+                  const midAnakLength = selectedMarkerData.anak.length - 1;
+                  const endIdxIstri = selectedMarkerData.nik.length - midAnakLength; // Indeks akhir untuk NIK istri
+
+                  const nikIstri = selectedMarkerData.nik.slice(startIdxIstri, endIdxIstri)[index];
+                  const alamatIstri = selectedMarkerData.address.slice(startIdxIstri, endIdxIstri)[index];
+
+
+                  return (
+                    <div key={index} className='warga-name-container'>
+                      <span className='warga-name'>Nama: {istriName} </span>
+                      <span className='nik-istri'>NIK: {nikIstri}</span>
+                      <span className='alamat-istri'>
+                        {alamatIstri === selectedMarkerData.address[0] ? "Alamat sama dengan Kepala Keluarga" : `Alamat: ${alamatIstri}`}
+                      </span>
+                      {index !== selectedMarkerData.istri.length - 1 && <br />} {/* Menambahkan <br> jika bukan istri terakhir */}
+                    </div>
+                  );
+                })
               ) : (
                 <span className='warga-name'>Belum ada data istri</span>
               )}
-              
             </div>
-            <hr className='container-line'/>
+            <hr className='container-line' />
+          </div>
+
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Anak</span>
+            </div>
+            <div>
+              {selectedMarkerData.anak ? (
+                selectedMarkerData.anak.map((anakName, index) => {
+                  const startIdxAnak = selectedMarkerData.istri.length+1; // Indeks mulai untuk NIK anak
+
+                  const nikAnak = selectedMarkerData.nik.slice(startIdxAnak)[index]; // Mengambil NIK anak menggunakan slicing
+                  const pekerjaanAnak = selectedMarkerData.statusAnak[index] || "Belum diketahui"; // Mendapatkan pekerjaan anak sesuai indeks atau default "Belum diketahui"
+                  const alamatAnak = selectedMarkerData.address.slice(startIdxAnak)[index];
+
+                  return (
+                    <div key={index} className='warga-name-container'>
+                      <span className='warga-name'>Nama: {anakName} </span>
+                      <span className='nik-anak'>NIK: {nikAnak}</span>
+                      <span className='pekerjaan-anak'>Status: {pekerjaanAnak}</span>
+                      <span className='alamat-anak'>
+                        {alamatAnak === selectedMarkerData.address[0] ? "Alamat sama dengan Kepala Keluarga" : `Alamat: ${alamatAnak}`}
+                      </span>
+                      {index !== selectedMarkerData.anak.length - 1 && <br />}
+                    </div>
+                  );
+                })
+              ) : (
+                <span className='warga-name'>Belum ada data anak</span>
+              )}
+            </div>
+            <hr className='container-line' />
+          </div>
+
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Informasi Keluarga</span>
+            </div>
+            <div className='row2-keluarga'>
+              <span className='warga-name'>Nomor PBB: {selectedMarkerData.name}</span>
+              <span className='nik'>Nomor BPJS: {selectedMarkerData.nik[0]}</span>
+            </div>
+            <hr className='container-line' />
+          </div>
+
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Data Kendaraan</span>
+            </div>
+            <div>
+              {selectedMarkerData.platNomor ? (
+                <div className='warga-name-container'>
+                  <span className='warga-name'>Jumlah Kendaraan: {selectedMarkerData.platNomor.length}</span>
+                  <span className='nik-anak'>
+                    {selectedMarkerData.platNomor.map((plat, index) => (
+                      <div key={index}>
+                        Plat Nomor {index + 1}: {plat}
+                      </div>
+                    ))}
+                  </span>
+                </div>
+              ) : (
+                <span className='warga-name'>Belum ada data kendaraan</span>
+              )}
+            </div>
+            <hr className='container-line' />
           </div>
 
           <div className='container-isi'>
@@ -92,10 +177,32 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
               ) : (
                 <span className='warga-name'>Belum ada data surat</span>
               )}
-     
             </div>
-            <hr className='container-line'/>
+            <hr className='container-line' />
           </div>
+          
+          <div className='container-isi'>
+            <div className='row1'>
+              <span className='nama'>Keterangan</span>
+            </div>
+            <div>
+              {selectedMarkerData.comment ? (
+                selectedMarkerData.comment.map((ket, index) => {
+
+                  return (
+                    <div key={index} className='warga-name-container'>
+                      <span className='warga-name'>{ket} </span>
+                      {index !== selectedMarkerData.comment.length - 1 && <br />}
+                    </div>
+                  );
+                })
+              ) : (
+                <span className='warga-name'>Belum ada data anak</span>
+              )}
+            </div>
+            <hr className='container-line' />
+          </div>
+          
           <div className='container-isi'>
             <div className='row1'>
               <span className='nama'>Foto KK</span>
@@ -129,7 +236,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
                     <img
                       src={image_url}
                       alt={`KTP ${index + 1}`}
-                      style={{ display: 'block', margin: '0 auto', height: '300px', marginTop: 10}}
+                      style={{ display: 'block', margin: '0 auto', height: '300px', marginTop: 10 }}
                     />
                   </div>
                 ))
@@ -149,7 +256,7 @@ const SideBar = ({ isOpen, selectedMarkerData, surat, onClose, hapus }) => {
             Tambah Anak
           </Button>
 
-          <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform:'none' }} className='delete' variant="contained" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
+          <Button style={{ width: 'calc(100% - 20px)', margin: '5px 5px 5px 10px', textAlign: 'center', textTransform: 'none' }} className='delete' variant="contained" color='error' onClick={() => { hapus(selectedMarkerData.name); onClose(); }}>Hapus</Button>
         </div>
       )}
 

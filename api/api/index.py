@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, current_app
 from pymongo import MongoClient 
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -23,6 +23,12 @@ def allowed_file(filename):
 
 def handle_error(e):
     return jsonify({'error': str(e)})
+
+@app.before_request
+def before_request():
+    if request.endpoint and request.endpoint != 'static':
+        global saved_data
+        saved_data = get_saved_data()
 
 @app.route('/') 
 def hello_world():  
@@ -319,33 +325,26 @@ def get_saved_data():
         return handle_error(e)
 
 # Inisialisasi data dari endpoint get_saved_data
-saved_data = get_saved_data()
+with app.app_context():
+    saved_data = get_saved_data()
 
-def save_file(data_keluarga):
+# Endpoint untuk menyimpan data dari frontend
+@app.route('/update_data', methods=['PUT'])
+def update_data():
     try:
-        with open('Warga.txt', 'a') as file:
-            # Ubah data menjadi format JSON dan tulis ke file
-            json_data = json.dumps(data_keluarga, default=str, ensure_ascii=False)
-            file.write(json_data + "\n")  # Tambahkan karakter newline untuk setiap data
-    except Exception as e:
-        print(f'Error saving to file: {e}')
-
-@app.route('/save_data', methods=['PUT'])
-def save_data_append():
-    try:
-        # Ambil data yang dikirim dari frontend
-        data_from_frontend = request.form.to_dict()
-
+        data_from_frontend = request.get_json()
+        # print(data_from_frontend)
         # Lakukan pembaruan data sesuai kebutuhan
         # Misalnya, kita akan menambahkan anak baru ke dalam array 'anak'
         saved_data['savedData'][0]['anak'].append(data_from_frontend['anak'])
-
+        print(saved_data)
         # Simpan data yang diperbarui ke file
-        save_file(saved_data['savedData'][0])
+        save_to_file(saved_data['savedData'][0])
 
         return jsonify({'message': 'Data berhasil diperbarui di backend'})
     except Exception as e:
         return jsonify({'error': str(e)})
+
 
 @app.route('/delete_data/<name>', methods=['DELETE'])
 def delete_data(name):

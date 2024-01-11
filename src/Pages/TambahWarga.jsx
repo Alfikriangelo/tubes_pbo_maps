@@ -953,10 +953,10 @@ function AddressForm({ formData, setFormData, setIsFormValid }) {
               icon={
                 new DivIcon({
                   className: "custom-div-icon",
-                  html: '<div><i class="fas fa-map-marker-alt fa-2x" alt="Marker Location"></i></div>',
-                  iconSize: [60, 84],
-                  iconAnchor: [30, 84],
-                  popupAnchor: [0, -84],
+                  html: '<div><i class="fas fa-map-marker-alt fa-5x" alt="Marker Location"></i></div>',
+                  iconSize: [10, 0],
+                  iconAnchor: [22, 40],
+                  popupAnchor: [0, -40],
                 })
               }
               draggable={true} // Aktifkan opsi draggable
