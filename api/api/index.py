@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
 import json
-import os
+import requests
 
 app = Flask(__name__) 
 CORS(app)
@@ -14,7 +14,7 @@ saved_file_data = {}
 # link fikri 'C:/Users/Lakuna/OneDrive/Documents/GitHub/tubes_pbo_maps/uploads'
 # link darell 'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
 
-UPLOAD_FOLDER = r'C:/Users/Nab/Documents/GitHub/tubes_pbo_maps/uploads'
+UPLOAD_FOLDER = r'C:/Users/ryand/Documents/GitHub/tubes_pbo_maps/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -294,8 +294,6 @@ def save_data():
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": str(e)}), 500
-    
-
 
 @app.route('/get_saved_data', methods=['GET'])
 def get_saved_data():
@@ -322,8 +320,35 @@ def get_saved_data():
     except Exception as e:
         return handle_error(e)
 
+# Inisialisasi data dari endpoint get_saved_data
+saved_data = get_saved_data()
 
-    
+def save_file(data_keluarga):
+    try:
+        with open('Warga.txt', 'a') as file:
+            # Ubah data menjadi format JSON dan tulis ke file
+            json_data = json.dumps(data_keluarga, default=str, ensure_ascii=False)
+            file.write(json_data + "\n")  # Tambahkan karakter newline untuk setiap data
+    except Exception as e:
+        print(f'Error saving to file: {e}')
+
+@app.route('/save_data', methods=['PUT'])
+def save_data_append():
+    try:
+        # Ambil data yang dikirim dari frontend
+        data_from_frontend = request.form.to_dict()
+
+        # Lakukan pembaruan data sesuai kebutuhan
+        # Misalnya, kita akan menambahkan anak baru ke dalam array 'anak'
+        saved_data['savedData'][0]['anak'].append(data_from_frontend['anak'])
+
+        # Simpan data yang diperbarui ke file
+        save_file(saved_data['savedData'][0])
+
+        return jsonify({'message': 'Data berhasil diperbarui di backend'})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
 @app.route('/delete_data/<name>', methods=['DELETE'])
 def delete_data(name):
     try:

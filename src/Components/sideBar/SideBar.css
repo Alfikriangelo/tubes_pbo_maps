@@ -139,6 +139,7 @@ body {
 .delete {
   display: flex;
   flex-direction: row;
+  text-align: center;
   justify-content: flex-end;
   align-items: center;
   align-content: center;
@@ -147,6 +148,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  text-align: center;
   align-items: center;
   align-content: center;
 }
