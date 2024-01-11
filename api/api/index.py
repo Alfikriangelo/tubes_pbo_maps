@@ -70,6 +70,8 @@ def save_to_file(data):
         "lastEdu": data.get("lastEdu", ""),
         "platNomor": [],
         "comment": [],
+        "pbb": data.get("taxNumber", ""),
+        "bpjs": data.get("bpjsNumber", ""),
         "coordinates": data.get("coordinates", ""),
         "fotoKK": full_path_kk,
         "fotoHome": full_path_home,
@@ -264,7 +266,7 @@ def save_data():
 
                 if file_key.startswith("fotoKK"):
                     image_kk_urls.append(file_url)
-                elif file_key.startswith("fotoKTP"):
+                elif file_key.startswith("fotoKTP") or file_key.startswith("ktpIstri") or file_key.startswith("ktpAnak"):
                     image_ktp_urls.append(file_url)
                 elif file_key == "fotoHome":
                     image_home_urls.append(file_url)
